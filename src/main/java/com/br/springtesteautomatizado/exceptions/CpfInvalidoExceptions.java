@@ -1,4 +1,4 @@
-package com.br.exceptions;
+package com.br.springtesteautomatizado.exceptions;
 
 public class CpfInvalidoExceptions extends Exception {
 

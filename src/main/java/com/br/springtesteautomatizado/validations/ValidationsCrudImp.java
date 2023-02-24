@@ -1,20 +1,18 @@
-package com.br.validations;
+package com.br.springtesteautomatizado.validations;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.br.exceptions.CpfInvalidoExceptions;
-import com.br.exceptions.ExisteCpfCadastrado;
-import com.br.repositories.UserRepository;
+import com.br.springtesteautomatizado.exceptions.CpfInvalidoExceptions;
+import com.br.springtesteautomatizado.exceptions.ExisteCpfCadastrado;
+import com.br.springtesteautomatizado.repositories.UserRepository;
 
 @Service
 public class ValidationsCrudImp implements IValidationsCrud {
 	
-	private final UserRepository userRepository;
-	
-	public ValidationsCrudImp (UserRepository userRepository) {
-		this.userRepository = userRepository;
-	}
+	@Autowired
+    private UserRepository userRepository;
 
 	@Override
 	public boolean validarCpf(String cpf) throws CpfInvalidoExceptions {

@@ -1,25 +1,26 @@
-package com.br.services;
+package com.br.springtesteautomatizado.services;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.br.exceptions.CpfInvalidoExceptions;
-import com.br.exceptions.ExisteCpfCadastrado;
-import com.br.models.User;
-import com.br.repositories.UserRepository;
 import com.br.springtesteautomatizado.SpringTesteAutomatizadoApplication;
+import com.br.springtesteautomatizado.exceptions.CpfInvalidoExceptions;
+import com.br.springtesteautomatizado.exceptions.ExisteCpfCadastrado;
+import com.br.springtesteautomatizado.models.User;
+import com.br.springtesteautomatizado.repositories.UserRepository;
+import com.br.springtesteautomatizado.services.UserService;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = SpringTesteAutomatizadoApplication.class)
+@SpringBootTest
 public class UserServiceTest {
 
-	@InjectMocks
+	@Autowired
 	private UserService service;
 	
 	@MockBean

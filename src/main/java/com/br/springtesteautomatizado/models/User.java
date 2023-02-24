@@ -1,4 +1,4 @@
-package com.br.models;
+package com.br.springtesteautomatizado.models;
 
 public class User {
 	
