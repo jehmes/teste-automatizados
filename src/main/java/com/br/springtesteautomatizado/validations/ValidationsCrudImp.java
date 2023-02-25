@@ -2,13 +2,13 @@ package com.br.springtesteautomatizado.validations;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import com.br.springtesteautomatizado.exceptions.CpfInvalidoExceptions;
 import com.br.springtesteautomatizado.exceptions.ExisteCpfCadastrado;
 import com.br.springtesteautomatizado.repositories.UserRepository;
 
-@Service
+@Component
 public class ValidationsCrudImp implements IValidationsCrud {
 	
 	@Autowired

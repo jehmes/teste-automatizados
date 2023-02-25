@@ -7,7 +7,6 @@ public class User {
 	private Integer idade;
 	
 	public User(String nome, String cpf, Integer idade) {
-		super();
 		this.nome = nome;
 		this.cpf = cpf;
 		this.idade = idade;
@@ -34,5 +33,9 @@ public class User {
 	public void setIdade(Integer idade) {
 		this.idade = idade;
 	}
-
+	@Override
+	public String toString() {
+		return "User [nome=" + nome + ", cpf=" + cpf + ", idade=" + idade + "]";
+	}
+	
 }
