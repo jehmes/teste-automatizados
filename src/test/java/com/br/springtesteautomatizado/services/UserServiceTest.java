@@ -1,18 +1,21 @@
 package com.br.springtesteautomatizado.services;
 
+import com.br.springtesteautomatizado.exceptions.CpfInvalidoExceptions;
+import com.br.springtesteautomatizado.exceptions.ExisteCpfCadastrado;
+import com.br.springtesteautomatizado.models.User;
+import com.br.springtesteautomatizado.repositories.UserRepository;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.br.springtesteautomatizado.exceptions.CpfInvalidoExceptions;
-import com.br.springtesteautomatizado.exceptions.ExisteCpfCadastrado;
-import com.br.springtesteautomatizado.models.User;
-import com.br.springtesteautomatizado.repositories.UserRepository;
+import java.util.Arrays;
+import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -25,23 +28,24 @@ public class UserServiceTest {
     private UserRepository userRepository;
 
     @Test
-    public void cadastrarUsuario_RetornaUsuarios() throws CpfInvalidoExceptions, ExisteCpfCadastrado {
+    public void cadastrarUsuario_RetornaUsuario() throws CpfInvalidoExceptions, ExisteCpfCadastrado {
         // cenario ou Arrange
-        User user = new User("Thales", "11278342400", 26);
-        User user1 = new User("Thales", "11278342401", 26);
+        User user = new User(1 ,"Thales", "11278342400", 26);
+        User user1 = new User(1 ,"Thales", "11278342401", 26);
 
+        Mockito.when(userRepository.save(user)).thenReturn(user);
         // acao ou Action
         User userCadastrado = service.cadastrar(user);
 
         // verificao ou Assert
         Assert.assertEquals(user, userCadastrado);
-//		Mockito.verify(null)
+        Mockito.verify(userRepository, Mockito.times(1)).save(ArgumentMatchers.any(User.class));
     }
 
     @Test
     public void cadastrarUsuario_LancaExceptionDeCpfInvalido() throws ExisteCpfCadastrado {
         // cenario ou Arrange
-        User user = new User("Thales", "1127842400", 26);
+        User user = new User(1 ,"Thales", "1127842400", 26);
 
         // acao ou Action
         try {
@@ -56,7 +60,7 @@ public class UserServiceTest {
     @Test
     public void cadastrarUsuario_LancaExceptionDeCpfJaCadastrado() throws CpfInvalidoExceptions {
         // cenario ou Arrange
-        User user = new User("Thales", "11278432400", 26);
+        User user = new User(1 ,"Thales", "11278432400", 26);
         Mockito.when(userRepository.findByCpf("11278432400")).thenReturn(user);
 
         // acao ou Action
@@ -67,6 +71,19 @@ public class UserServiceTest {
             // verificao ou Assert
             Assert.assertEquals(e.getClass(), ExisteCpfCadastrado.class);
         }
+    }
+
+    @Test
+    public void obterTodosUsuarios_RetornarUsuarios() {
+    List<User> userList = Arrays.asList(
+            new User(1, "Thales", "11278342400", 23),
+            new User(2, "Thales1", "11278342401", 25));
+        Mockito.when(service.obterTodosUsuarios()).thenReturn(userList);
+
+        List<User> allUsers = service.obterTodosUsuarios();
+
+        Assert.assertEquals(userList, allUsers);
+        Mockito.verify(userRepository, Mockito.times(1)).findAll();
     }
 
 }
