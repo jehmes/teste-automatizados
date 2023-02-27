@@ -4,7 +4,9 @@ import com.br.springtesteautomatizado.models.Cart;
 import com.br.springtesteautomatizado.models.Product;
 import com.br.springtesteautomatizado.models.Sale;
 import com.br.springtesteautomatizado.models.User;
+import com.br.springtesteautomatizado.repositories.ProductRepository;
 import com.br.springtesteautomatizado.repositories.SaleRepository;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -17,6 +19,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -28,39 +31,46 @@ public class SaleServiceTest {
     private ProductService productService;
     @MockBean
     private SaleRepository saleRepository;
+    @MockBean
+    private ProductRepository productRepository;
 
     @Test
     public void saveSale() throws Exception {
         //Arrange
-        Sale sale = Mockito.mock(Sale.class);
-        User user = Mockito.mock(User.class);
-        Cart cart = Mockito.mock(Cart.class);
+        User user = new User();
+        user.setId(1);
+        user.setNome("Thales");
+        user.setIdade(26);
+        user.setCpf("11278342400");
 
         List<Product> productList = Arrays.asList(
-                new Product(1, "Sapato", BigDecimal.valueOf(199.90), 1),
-                new Product(2, "Camisa", BigDecimal.valueOf(69.90), 2));
+                new Product(1L, "Sapato", BigDecimal.valueOf(199.90), 1),
+                new Product(2L, "Camisa", BigDecimal.valueOf(69.90), 2));
 
-        Mockito.when(user.getId()).thenReturn(1);
-        Mockito.when(user.getNome()).thenReturn("Thales");
-        Mockito.when(user.getIdade()).thenReturn(26);
-        Mockito.when(user.getCpf()).thenReturn("11278342400");
+        Cart cart = new Cart();
+        cart.setId(1);
+        cart.setUser(user);
+        cart.setProducts(productList);
+        cart.setTotalPrice(BigDecimal.valueOf(269.8));
 
-        Mockito.when(cart.getId()).thenReturn(1);
-        Mockito.when(cart.getUser()).thenReturn(user);
-        Mockito.when(cart.getProducts()).thenReturn(productList);
-        Mockito.when(cart.getTotalPrice()).thenReturn(BigDecimal.valueOf(269.8));
+        Sale sale = new Sale();
+        sale.setId(1);
+        sale.setUser(user);
+        sale.setCart(cart);
+        sale.setTotalPrice(BigDecimal.valueOf(269.8));
+        sale.setDateTime(LocalDate.now());
 
-        Mockito.when(sale.getId()).thenReturn(1);
-        Mockito.when(sale.getUser()).thenReturn(user);
-        Mockito.when(sale.getCart()).thenReturn(cart);
-        Mockito.when(sale.getTotalPrice()).thenReturn(cart.getTotalPrice());
-        Mockito.when(sale.getDate()).thenReturn(LocalDate.now());
+        Mockito.when(productRepository.findById(productList.get(0).getId())).thenReturn(Optional.of(productList.get(0)));
+        Mockito.when(productRepository.findById(productList.get(1).getId())).thenReturn(Optional.of(productList.get(1)));
 
         //Action
-        saleService.saveSale(cart);
+        productService.subtractProducts(productList);
+        saleRepository.save(sale);
 
         //Assert
-        Mockito.verify(saleService, Mockito.times(1)).saveSale(cart);
+        Mockito.verify(productRepository, Mockito.times(1)).saveAll(Mockito.anyCollection());
+        Mockito.verify(saleRepository, Mockito.times(1)).save(Mockito.any(Sale.class));
+        Assert.assertEquals(sale.getDateTime(), LocalDate.now());
 
     }
 

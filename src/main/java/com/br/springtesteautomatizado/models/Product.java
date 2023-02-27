@@ -10,7 +10,7 @@ public class Product {
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
-    private Integer id;
+    private Long id;
     @Column(nullable = false)
     private String name;
     @Column(nullable = false)
@@ -18,7 +18,7 @@ public class Product {
     @Column(nullable = false)
     private Integer quantity;
 
-    public Product(Integer id, String name, BigDecimal value, Integer quantity) {
+    public Product(Long id, String name, BigDecimal value, Integer quantity) {
         this.id = id;
         this.name = name;
         this.price = value;
@@ -28,11 +28,11 @@ public class Product {
     public Product() {
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

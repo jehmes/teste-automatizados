@@ -12,19 +12,19 @@ public class Sale {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Integer id;
-    @Column(nullable = false)
+    @Transient
     private Cart cart;
-    @Column(nullable = false)
+    @ManyToOne
     private User user;
     @Column(nullable = false)
-    private LocalDate date;
+    private LocalDate dateTime;
     @Column(nullable = false)
     private BigDecimal totalPrice;
 
-    public Sale(Cart cart, User user, LocalDate date, BigDecimal totalPrice) {
+    public Sale(Cart cart, User user, LocalDate dateTime, BigDecimal totalPrice) {
         this.cart = cart;
         this.user = user;
-        this.date = date;
+        this.dateTime = dateTime;
         this.totalPrice = totalPrice;
     }
 
@@ -55,12 +55,12 @@ public class Sale {
         this.user = user;
     }
 
-    public LocalDate getDate() {
-        return date;
+    public LocalDate getDateTime() {
+        return dateTime;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
+    public void setDateTime(LocalDate dateTime) {
+        this.dateTime = dateTime;
     }
 
     public BigDecimal getTotalPrice() {
