@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class ProductService implements IProductService {
+public class ProductServiceImp implements IProductService {
 
     @Autowired
     private ProductRepository productRepository;
