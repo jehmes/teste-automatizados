@@ -22,7 +22,7 @@ import java.util.List;
 public class UserServiceTest {
 
     @Autowired
-    private UserService userService;
+    private UserServiceImp userServiceImp;
 
     @MockBean
     private UserRepository userRepository;
@@ -36,7 +36,7 @@ public class UserServiceTest {
         Mockito.when(userRepository.save(user)).thenReturn(user);
 
         // acao ou Action
-        User userCadastrado = userService.cadastrar(user);
+        User userCadastrado = userServiceImp.cadastrar(user);
 
         // verificao ou Assert
         Assert.assertEquals(user, userCadastrado);
@@ -50,7 +50,7 @@ public class UserServiceTest {
 
         // acao ou Action
         try {
-            User userCadastrado = userService.cadastrar(user);
+            User userCadastrado = userServiceImp.cadastrar(user);
             Assert.fail("Deveria lançar exceção com cpf inválido");
         } catch (CpfInvalidoExceptions e) {
             // verificao ou assert
@@ -66,7 +66,7 @@ public class UserServiceTest {
 
         // acao ou Action
         try {
-            User userCadastrado = userService.cadastrar(user);
+            User userCadastrado = userServiceImp.cadastrar(user);
             Assert.fail("Deveria lançar exceção de cpf ja cadastrado no banco");
         } catch (ExisteCpfCadastrado e) {
             // verificao ou Assert
@@ -80,10 +80,10 @@ public class UserServiceTest {
         List<User> userList = Arrays.asList(
                 new User(1, "Thales", "11278342400", 23),
                 new User(2, "Thales1", "11278342401", 25));
-        Mockito.when(userService.obterTodosUsuarios()).thenReturn(userList);
+        Mockito.when(userServiceImp.obterTodosUsuarios()).thenReturn(userList);
 
         //Action
-        List<User> allUsers = userService.obterTodosUsuarios();
+        List<User> allUsers = userServiceImp.obterTodosUsuarios();
 
         //Assert
         Assert.assertEquals(userList, allUsers);
