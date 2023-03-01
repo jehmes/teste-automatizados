@@ -9,13 +9,13 @@ public class Cart {
 
     private Integer id;
     private List<Product> products = new ArrayList<>();
-    private BigDecimal totalPrice;
+    private BigDecimal amount;
     private User user;
 
-    public Cart(Integer id, List<Product> products, BigDecimal totalPrice, User user) {
+    public Cart(Integer id, List<Product> products, BigDecimal amount, User user) {
         this.id = id;
         this.products = products;
-        this.totalPrice = totalPrice;
+        this.amount = amount;
         this.user = user;
     }
 
@@ -38,12 +38,12 @@ public class Cart {
         this.products = products;
     }
 
-    public BigDecimal getTotalPrice() {
-        return totalPrice;
+    public BigDecimal getAmount() {
+        return amount;
     }
 
-    public void setTotalPrice(BigDecimal totalPrice) {
-        this.totalPrice = totalPrice;
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
     }
 
     public User getUser() {

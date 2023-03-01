@@ -20,21 +20,21 @@ public class UserServiceImp implements IUserService {
     @Autowired
     private IValidationsCrud validationsCrud;
 
-
+    @Override
     public User cadastrar(User user) throws CpfInvalidoExceptions, ExisteCpfCadastrado {
         validationsCrud.validarCpf(user.getCpf());
         validationsCrud.validarSeExisteCpfCadastrado(user.getCpf());
 
         return userRepository.save(user);
     }
-
+    @Override
     public User editar(User user) throws CpfInvalidoExceptions, ExisteCpfCadastrado {
         validationsCrud.validarCpf(user.getCpf());
         validationsCrud.validarSeExisteCpfCadastrado(user.getCpf());
 
         return userRepository.save(user);
     }
-
+    @Override
     public List<User> obterTodosUsuarios() {
         return (List<User>) userRepository.findAll();
     };

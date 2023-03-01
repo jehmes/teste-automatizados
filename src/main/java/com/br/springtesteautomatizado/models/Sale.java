@@ -4,28 +4,35 @@ import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
-@Table(name = "vendas")
+@Table(name = "GP_SALE")
 public class Sale {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-    @Transient
-    private Cart cart;
+    @ManyToMany
+    @JoinTable(name = "sale_product",
+            joinColumns = @JoinColumn(name = "sale_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id"))
+    private List<Product> productList;
     @ManyToOne
     private User user;
     @Column(nullable = false)
     private LocalDate dateTime;
     @Column(nullable = false)
-    private BigDecimal totalPrice;
+    private BigDecimal amount;
+    @OneToOne(cascade = CascadeType.ALL)
+    private Payment payment;
 
-    public Sale(Cart cart, User user, LocalDate dateTime, BigDecimal totalPrice) {
-        this.cart = cart;
+    public Sale(List<Product> productList, User user, LocalDate dateTime, BigDecimal totalPrice, Payment payment) {
+        this.productList = productList;
         this.user = user;
         this.dateTime = dateTime;
-        this.totalPrice = totalPrice;
+        this.amount = totalPrice;
+        this.payment = payment;
     }
 
     public Sale() {
@@ -37,14 +44,6 @@ public class Sale {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public Cart getCart() {
-        return cart;
-    }
-
-    public void setCart(Cart cart) {
-        this.cart = cart;
     }
 
     public User getUser() {
@@ -63,12 +62,27 @@ public class Sale {
         this.dateTime = dateTime;
     }
 
-    public BigDecimal getTotalPrice() {
-        return totalPrice;
+    public BigDecimal getAmount() {
+        return amount;
     }
 
-    public void setTotalPrice(BigDecimal totalPrice) {
-        this.totalPrice = totalPrice;
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
     }
 
+    public Payment getPayment() {
+        return payment;
+    }
+
+    public void setPayment(Payment payment) {
+        this.payment = payment;
+    }
+
+    public List<Product> getProductList() {
+        return productList;
+    }
+
+    public void setProductList(List<Product> productList) {
+        this.productList = productList;
+    }
 }

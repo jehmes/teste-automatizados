@@ -3,9 +3,10 @@ package com.br.springtesteautomatizado.models;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
-@Table(name = "produtos")
+@Table(name = "GP_PRODUCT")
 public class Product {
 
     @Id
@@ -17,9 +18,16 @@ public class Product {
     private BigDecimal price;
     @Column(nullable = false)
     private Integer quantity;
+    @ManyToMany(mappedBy = "productList")
+    private List<Sale> saleList;
 
     public Product(Long id, String name, BigDecimal value, Integer quantity) {
         this.id = id;
+        this.name = name;
+        this.price = value;
+        this.quantity = quantity;
+    }
+    public Product(String name, BigDecimal value, Integer quantity) {
         this.name = name;
         this.price = value;
         this.quantity = quantity;
@@ -58,5 +66,13 @@ public class Product {
 
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
+    }
+
+    public List<Sale> getSaleList() {
+        return saleList;
+    }
+
+    public void setSaleList(List<Sale> saleList) {
+        this.saleList = saleList;
     }
 }

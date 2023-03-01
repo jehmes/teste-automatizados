@@ -3,7 +3,7 @@ package com.br.springtesteautomatizado.models;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "usuarios")
+@Table(name = "GP_USER")
 public class User {
 
     @Id
