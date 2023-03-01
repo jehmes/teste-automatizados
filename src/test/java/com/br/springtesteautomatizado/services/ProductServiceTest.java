@@ -37,7 +37,7 @@ public class ProductServiceTest {
     @Before
     public void setup() {
         User user = new User();
-        user.setId(1);
+        user.setId(1L);
         user.setNome("Thales");
         user.setIdade(26);
         user.setCpf("11278342400");
@@ -47,13 +47,13 @@ public class ProductServiceTest {
                 new Product(2L, "Camisa", BigDecimal.valueOf(69.90), 2));
 
         Cart cart = new Cart();
-        cart.setId(1);
+        cart.setId(1L);
         cart.setUser(user);
         cart.setProducts(productList);
         cart.setAmount(BigDecimal.valueOf(269.8));
 
         sale = new Sale();
-        sale.setId(1);
+        sale.setId(1L);
         sale.setUser(user);
         sale.setAmount(BigDecimal.valueOf(269.8));
         sale.setDateTime(LocalDate.now());

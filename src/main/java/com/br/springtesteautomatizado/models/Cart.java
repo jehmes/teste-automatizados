@@ -7,12 +7,12 @@ import java.util.List;
 
 public class Cart {
 
-    private Integer id;
+    private Long id;
     private List<Product> products = new ArrayList<>();
     private BigDecimal amount;
     private User user;
 
-    public Cart(Integer id, List<Product> products, BigDecimal amount, User user) {
+    public Cart(Long id, List<Product> products, BigDecimal amount, User user) {
         this.id = id;
         this.products = products;
         this.amount = amount;
@@ -22,11 +22,11 @@ public class Cart {
     public Cart() {
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

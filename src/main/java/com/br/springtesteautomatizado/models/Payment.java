@@ -11,7 +11,7 @@ import java.time.LocalDate;
 public class Payment {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
-    private Integer id;
+    private Long id;
     @Column(nullable = false)
     private LocalDate dateTime;
     @Column(nullable = false)
@@ -21,7 +21,7 @@ public class Payment {
     @Column(nullable = false)
     private BigDecimal amount;
 
-    public Payment(Integer id, LocalDate date, PaymentMethodsEnum paymentMethod, PaymentProof paymentProof, BigDecimal amount) {
+    public Payment(Long id, LocalDate date, PaymentMethodsEnum paymentMethod, PaymentProof paymentProof, BigDecimal amount) {
         this.id = id;
         this.dateTime = date;
         this.paymentMethod = paymentMethod;
@@ -29,11 +29,11 @@ public class Payment {
         this.amount = amount;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

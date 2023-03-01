@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import com.br.springtesteautomatizado.models.User;
 
 @Repository
-public interface UserRepository extends CrudRepository<User, Integer> {
+public interface UserRepository extends CrudRepository<User, Long> {
 	
 	User findByCpf(String cpf);
 

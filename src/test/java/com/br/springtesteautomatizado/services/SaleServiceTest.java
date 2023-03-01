@@ -1,7 +1,9 @@
 package com.br.springtesteautomatizado.services;
 
 import com.br.springtesteautomatizado.enums.ProductsErrorsEnum;
+import com.br.springtesteautomatizado.enums.UserErrorsEnum;
 import com.br.springtesteautomatizado.exceptions.ProductException;
+import com.br.springtesteautomatizado.exceptions.UserException;
 import com.br.springtesteautomatizado.models.Cart;
 import com.br.springtesteautomatizado.models.Product;
 import com.br.springtesteautomatizado.models.Sale;
@@ -44,7 +46,7 @@ public class SaleServiceTest {
     @Before
     public void setup() {
         user = new User();
-        user.setId(1);
+        user.setId(1L);
         user.setNome("Thales");
         user.setIdade(26);
         user.setCpf("11278342400");
@@ -54,16 +56,18 @@ public class SaleServiceTest {
                 new Product(2L, "Camisa", BigDecimal.valueOf(69.90), 2));
 
         Cart cart = new Cart();
-        cart.setId(1);
+        cart.setId(1L);
         cart.setUser(user);
         cart.setProducts(productList);
         cart.setAmount(BigDecimal.valueOf(269.8));
 
         sale = new Sale();
-        sale.setId(1);
+        sale.setId(1L);
         sale.setUser(user);
         sale.setAmount(BigDecimal.valueOf(269.8));
         sale.setDateTime(LocalDate.now());
+
+        sale.setProductList(productList);
     }
 
     @Test
@@ -87,7 +91,7 @@ public class SaleServiceTest {
         //Arrange
         User userMock = Mockito.mock(User.class);
         Mockito.when(userMock.getNome()).thenReturn("Thales");
-        Mockito.when(userMock.getId()).thenReturn(1);
+        Mockito.when(userMock.getId()).thenReturn(1L);
 
         Product product1 = Mockito.mock(Product.class);
         Mockito.when(product1.getId()).thenReturn(1L);
@@ -101,12 +105,6 @@ public class SaleServiceTest {
         Mockito.when(product2.getPrice()).thenReturn(BigDecimal.valueOf(69.90));
         Mockito.when(product2.getQuantity()).thenReturn(2);
 
-        List<Product> productListMock = new ArrayList<>();
-        productListMock.add(product1);
-        productListMock.add(product2);
-
-        sale.setProductList(productListMock);
-
         Mockito.when(userRepository.findById(userMock.getId())).thenReturn(Optional.of(userMock));
         Mockito.when(productRepository.findById(product1.getId())).thenReturn(Optional.of(product1));
 //        Mockito.when(productRepository.findById(product2.getId())).thenReturn(Optional.of(product2));
@@ -117,8 +115,28 @@ public class SaleServiceTest {
             Assert.fail("Esperava lançar exception de não encontrar o produto");
         } catch (ProductException e) {
             //Assert
-            Assert.assertEquals(ProductsErrorsEnum.ERROR_FIND_PRODUCT.getName() , e.getMessage());
+            Assert.assertEquals(ProductsErrorsEnum.ERROR_FIND_PRODUCT.getName(), e.getMessage());
         }
+    }
+
+    @Test
+    public void saveSale_ThrowUserException() throws Exception {
+        //Arrange
+        Mockito.when(saleServiceImp.userRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.empty());
+//        Mockito.when(saleServiceImp.userRepository.findById(Mockito.any(Integer.class))).thenReturn(Optional.of(Mockito.mock(User.class)));
+
+        //Action
+        try {
+            saleServiceImp.saveSale(sale);
+            Assert.fail("Esperava lançar exceção de usuario nao encontrado");
+        } catch (UserException e) {
+            //Assert
+            Assert.assertEquals(UserErrorsEnum.ERROR_FIND_USER.getName(), e.getMessage());
+        } catch (ProductException e) {
+            Assert.fail("Esperava lançar exceção de usuario nao encontrado");
+        }
+
+
     }
 
 }

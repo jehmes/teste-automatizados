@@ -30,8 +30,8 @@ public class UserServiceTest {
     @Test
     public void cadastrarUsuario_RetornaUsuario() throws CpfInvalidoExceptions, ExisteCpfCadastrado {
         // cenario ou Arrange
-        User user = new User(1, "Thales", "11278342400", 26);
-        User user1 = new User(1, "Thales", "11278342401", 26);
+        User user = new User(1L, "Thales", "11278342400", 26);
+        User user1 = new User(1L, "Thales", "11278342401", 26);
 
         Mockito.when(userRepository.save(user)).thenReturn(user);
 
@@ -46,7 +46,7 @@ public class UserServiceTest {
     @Test
     public void cadastrarUsuario_LancaExceptionDeCpfInvalido() throws ExisteCpfCadastrado {
         // cenario ou Arrange
-        User user = new User(1, "Thales", "1127842400", 26);
+        User user = new User(1L, "Thales", "1127842400", 26);
 
         // acao ou Action
         try {
@@ -61,7 +61,7 @@ public class UserServiceTest {
     @Test
     public void cadastrarUsuario_LancaExceptionDeCpfJaCadastrado() throws CpfInvalidoExceptions {
         // cenario ou Arrange
-        User user = new User(1, "Thales", "11278432400", 26);
+        User user = new User(1L, "Thales", "11278432400", 26);
         Mockito.when(userRepository.findByCpf("11278432400")).thenReturn(user);
 
         // acao ou Action
@@ -78,8 +78,8 @@ public class UserServiceTest {
     public void obterTodosUsuarios_RetornarUsuarios() {
         //Arrange
         List<User> userList = Arrays.asList(
-                new User(1, "Thales", "11278342400", 23),
-                new User(2, "Thales1", "11278342401", 25));
+                new User(1L, "Thales", "11278342400", 23),
+                new User(2L, "Thales1", "11278342401", 25));
         Mockito.when(userServiceImp.obterTodosUsuarios()).thenReturn(userList);
 
         //Action
