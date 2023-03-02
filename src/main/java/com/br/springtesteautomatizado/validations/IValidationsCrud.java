@@ -1,12 +1,10 @@
 package com.br.springtesteautomatizado.validations;
 
-import org.springframework.stereotype.Component;
-
-import com.br.springtesteautomatizado.exceptions.CpfInvalidoExceptions;
-import com.br.springtesteautomatizado.exceptions.ExisteCpfCadastrado;
+import com.br.springtesteautomatizado.exceptions.CpfInvalidoException;
+import com.br.springtesteautomatizado.exceptions.CpfCreatedExistException;
 
 public interface IValidationsCrud {
 
-	boolean validarCpf(String cpf) throws CpfInvalidoExceptions;
-	boolean validarSeExisteCpfCadastrado(String cpf) throws ExisteCpfCadastrado;
+	boolean validarCpf(String cpf) throws CpfInvalidoException;
+	boolean validarSeExisteCpfCadastrado(String cpf) throws CpfCreatedExistException;
 }

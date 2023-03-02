@@ -7,5 +7,5 @@ import java.util.List;
 public interface IProductService {
 
     void subtractProducts(List<Product> products) throws Exception;
-    public Product createProduct();
+    public List<Product> createProducts();
 }

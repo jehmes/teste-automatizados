@@ -24,7 +24,7 @@ public class Sale {
     private LocalDate dateTime;
     @Column(nullable = false)
     private BigDecimal amount;
-    @OneToOne(cascade = CascadeType.ALL)
+    @Transient
     private Payment payment;
 
     public Sale(List<Product> productList, User user, LocalDate dateTime, BigDecimal totalPrice, Payment payment) {
@@ -32,7 +32,6 @@ public class Sale {
         this.user = user;
         this.dateTime = dateTime;
         this.amount = totalPrice;
-        this.payment = payment;
     }
 
     public Sale() {
@@ -70,19 +69,19 @@ public class Sale {
         this.amount = amount;
     }
 
-    public Payment getPayment() {
-        return payment;
-    }
-
-    public void setPayment(Payment payment) {
-        this.payment = payment;
-    }
-
     public List<Product> getProductList() {
         return productList;
     }
 
     public void setProductList(List<Product> productList) {
         this.productList = productList;
+    }
+
+    public Payment getPayment() {
+        return payment;
+    }
+
+    public void setPayment(Payment payment) {
+        this.payment = payment;
     }
 }

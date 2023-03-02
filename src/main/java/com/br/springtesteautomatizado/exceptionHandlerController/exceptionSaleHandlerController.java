@@ -1,5 +1,6 @@
 package com.br.springtesteautomatizado.exceptionHandlerController;
 
+import com.br.springtesteautomatizado.exceptions.PaymentException;
 import com.br.springtesteautomatizado.exceptions.ProductException;
 import com.br.springtesteautomatizado.exceptions.UserException;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,14 @@ public class exceptionSaleHandlerController extends ResponseEntityExceptionHandl
 
     @ExceptionHandler(UserException.class)
     public final ResponseEntity<ExceptionResponse> handleUserException(UserException ex, WebRequest request) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
+                request.getDescription(false),HttpStatus.NOT_ACCEPTABLE.getReasonPhrase());
+        ex.printStackTrace();
+        return new ResponseEntity<ExceptionResponse>(exceptionResponse, HttpStatus.NOT_ACCEPTABLE);
+    }
+
+    @ExceptionHandler(PaymentException.class)
+    public final ResponseEntity<ExceptionResponse> handlePaymentException(PaymentException ex, WebRequest request) {
         ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
                 request.getDescription(false),HttpStatus.NOT_ACCEPTABLE.getReasonPhrase());
         ex.printStackTrace();

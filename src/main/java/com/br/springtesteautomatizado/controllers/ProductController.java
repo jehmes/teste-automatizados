@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/product")
 public class ProductController {
@@ -17,8 +19,8 @@ public class ProductController {
     private IProductService iProductService;
 
     @PostMapping("/create")
-    public ResponseEntity<Product> createProduct() {
-        return ResponseEntity.status(HttpStatus.CREATED).body(iProductService.createProduct());
+    public ResponseEntity<List<Product>> createProducts() {
+        return ResponseEntity.status(HttpStatus.CREATED).body(iProductService.createProducts());
     }
 
 }

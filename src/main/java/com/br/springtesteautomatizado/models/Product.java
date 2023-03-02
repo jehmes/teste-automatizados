@@ -20,6 +20,8 @@ public class Product {
     private Integer quantity;
     @ManyToMany(mappedBy = "productList")
     private List<Sale> saleList;
+    @ManyToMany(mappedBy = "productList")
+    private List<PaymentProof> paymentProofList;
 
     public Product(Long id, String name, BigDecimal value, Integer quantity) {
         this.id = id;
@@ -27,12 +29,6 @@ public class Product {
         this.price = value;
         this.quantity = quantity;
     }
-    public Product(String name, BigDecimal value, Integer quantity) {
-        this.name = name;
-        this.price = value;
-        this.quantity = quantity;
-    }
-
     public Product() {
     }
 
@@ -74,5 +70,12 @@ public class Product {
 
     public void setSaleList(List<Sale> saleList) {
         this.saleList = saleList;
+    }
+
+    public List<PaymentProof> getPaymentProofList() {
+        return paymentProofList;
+    }
+    public void setPaymentProofList(List<PaymentProof> paymentProofList) {
+        this.paymentProofList = paymentProofList;
     }
 }

@@ -1,9 +1,11 @@
 package com.br.springtesteautomatizado.models;
 
+import com.br.springtesteautomatizado.enums.PaymentMethodsEnum;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "GP_PAYMENT_PROOF")
@@ -18,14 +20,25 @@ public class PaymentProof {
     private User user;
     @Column(nullable = false)
     private BigDecimal amountPaid;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private PaymentMethodsEnum paymentMethod;
+    @ManyToMany
+    @JoinTable(name = "paymentProof_Product",
+            joinColumns = @JoinColumn(name = "payment_proof_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id"))
+    private List<Product> productList;
 
-    public PaymentProof() {
-    }
-    public PaymentProof(Long id, LocalDate paymentDate, User user, BigDecimal amountPaid) {
+    public PaymentProof(Long id, LocalDate paymentDate, User user, BigDecimal amountPaid, PaymentMethodsEnum paymentMethod, List<Product> productList) {
         this.id = id;
         this.paymentDate = paymentDate;
         this.user = user;
         this.amountPaid = amountPaid;
+        this.paymentMethod = paymentMethod;
+        this.productList = productList;
+    }
+
+    public PaymentProof() {
     }
 
     public Long getId() {
@@ -58,5 +71,19 @@ public class PaymentProof {
 
     public void setAmountPaid(BigDecimal amountPaid) {
         this.amountPaid = amountPaid;
+    }
+    public List<Product> getProductList() {
+        return productList;
+    }
+    public void setProductList(List<Product> productList) {
+        this.productList = productList;
+    }
+
+    public PaymentMethodsEnum getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(PaymentMethodsEnum paymentMethod) {
+        this.paymentMethod = paymentMethod;
     }
 }

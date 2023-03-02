@@ -4,10 +4,12 @@ import com.br.springtesteautomatizado.enums.ProductsErrorsEnum;
 import com.br.springtesteautomatizado.enums.UserErrorsEnum;
 import com.br.springtesteautomatizado.exceptions.ProductException;
 import com.br.springtesteautomatizado.exceptions.UserException;
+import com.br.springtesteautomatizado.factorys.CardPaymentFactory;
+import com.br.springtesteautomatizado.factorys.PaymentFactory;
+import com.br.springtesteautomatizado.factorys.PixPaymentFactory;
+import com.br.springtesteautomatizado.interfaces.IPaymentService;
 import com.br.springtesteautomatizado.interfaces.ISaleService;
-import com.br.springtesteautomatizado.models.Product;
-import com.br.springtesteautomatizado.models.Sale;
-import com.br.springtesteautomatizado.models.User;
+import com.br.springtesteautomatizado.models.*;
 import com.br.springtesteautomatizado.repositories.ProductRepository;
 import com.br.springtesteautomatizado.repositories.SaleRepository;
 import com.br.springtesteautomatizado.repositories.UserRepository;
@@ -20,17 +22,18 @@ public class SaleServiceImp implements ISaleService {
     @Autowired
     private ProductRepository productRepository;
     @Autowired
-    SaleRepository saleRepository;
-
+    private SaleRepository saleRepository;
     @Autowired
-    ProductServiceImp productService;
-
+    private  ProductServiceImp productService;
     @Autowired
-    UserRepository userRepository;
-
+    private UserRepository userRepository;
+    @Autowired
+    private PaymentByCardServiceImp paymentByCardServiceImp;
+    @Autowired
+    private PaymentByPixServiceImp paymentByPixServiceImp;
 
     @Override
-    public void saveSale(Sale sale) throws Exception {
+    public PaymentProof saveSale(Sale sale) throws Exception {
         User user = userRepository.findById(sale.getUser().getId())
                 .orElseThrow(() -> new UserException(UserErrorsEnum.ERROR_FIND_USER.getName()));
         sale.setUser(user);
@@ -40,9 +43,22 @@ public class SaleServiceImp implements ISaleService {
                     () -> new ProductException(ProductsErrorsEnum.ERROR_FIND_PRODUCT.getName())
             );
         }
-
-        saleRepository.save(sale);
+        PaymentFactory paymentFactory;
+        switch (sale.getPayment().getPaymentMethod()) {
+            case CARD:
+                paymentFactory = new CardPaymentFactory(paymentByCardServiceImp);
+                break;
+            case PIX:
+                paymentFactory = new PixPaymentFactory(paymentByPixServiceImp);
+                break;
+            default:
+                throw new RuntimeException("Método de pagamento inválido");
+        }
+        PaymentProof paymentProof = paymentFactory.createPayment(sale);
         productService.subtractProducts(sale.getProductList());
+        saleRepository.save(sale);
+
+        return paymentProof;
     }
 
 }

@@ -1,7 +1,7 @@
 package com.br.springtesteautomatizado.services;
 
-import com.br.springtesteautomatizado.exceptions.CpfInvalidoExceptions;
-import com.br.springtesteautomatizado.exceptions.ExisteCpfCadastrado;
+import com.br.springtesteautomatizado.exceptions.CpfInvalidoException;
+import com.br.springtesteautomatizado.exceptions.CpfCreatedExistException;
 import com.br.springtesteautomatizado.interfaces.IUserService;
 import com.br.springtesteautomatizado.models.User;
 import com.br.springtesteautomatizado.repositories.UserRepository;
@@ -21,14 +21,14 @@ public class UserServiceImp implements IUserService {
     private IValidationsCrud validationsCrud;
 
     @Override
-    public User cadastrar(User user) throws CpfInvalidoExceptions, ExisteCpfCadastrado {
+    public User cadastrar(User user) throws CpfInvalidoException, CpfCreatedExistException {
         validationsCrud.validarCpf(user.getCpf());
         validationsCrud.validarSeExisteCpfCadastrado(user.getCpf());
 
         return userRepository.save(user);
     }
     @Override
-    public User editar(User user) throws CpfInvalidoExceptions, ExisteCpfCadastrado {
+    public User editar(User user) throws CpfInvalidoException, CpfCreatedExistException {
         validationsCrud.validarCpf(user.getCpf());
         validationsCrud.validarSeExisteCpfCadastrado(user.getCpf());
 

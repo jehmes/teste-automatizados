@@ -39,14 +39,16 @@ public class ProductServiceImp implements IProductService {
     }
 
     @Override
-    public Product createProduct() {
-        Product p1 =new Product("Product 1", new BigDecimal("50.00"), 5);
-        Product p2 =new Product("Product 2", new BigDecimal("30.00"), 5);
-        Product p3 =new Product("Product 3", new BigDecimal("70.00"),5);
-        productRepository.save(p1);
-        productRepository.save(p2);
-        productRepository.save(p3);
-        return p1;
+    public List<Product> createProducts() {
+        List<Product> productList = new ArrayList<>();
+        Product p1 =new Product(null, "Product 1", new BigDecimal("50.00"), 5);
+        Product p2 =new Product(null, "Product 2", new BigDecimal("30.00"), 5);
+        Product p3 =new Product(null, "Product 3", new BigDecimal("70.00"),5);
+        productList.add(p1);
+        productList.add(p2);
+        productList.add(p3);
+        productRepository.saveAll(productList);
+        return productList;
     }
 
 

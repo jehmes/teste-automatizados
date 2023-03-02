@@ -1,7 +1,7 @@
 package com.br.springtesteautomatizado.services;
 
-import com.br.springtesteautomatizado.exceptions.CpfInvalidoExceptions;
-import com.br.springtesteautomatizado.exceptions.ExisteCpfCadastrado;
+import com.br.springtesteautomatizado.exceptions.CpfInvalidoException;
+import com.br.springtesteautomatizado.exceptions.CpfCreatedExistException;
 import com.br.springtesteautomatizado.models.User;
 import com.br.springtesteautomatizado.repositories.UserRepository;
 import org.junit.Assert;
@@ -28,7 +28,7 @@ public class UserServiceTest {
     private UserRepository userRepository;
 
     @Test
-    public void cadastrarUsuario_RetornaUsuario() throws CpfInvalidoExceptions, ExisteCpfCadastrado {
+    public void cadastrarUsuario_RetornaUsuario() throws CpfInvalidoException, CpfCreatedExistException {
         // cenario ou Arrange
         User user = new User(1L, "Thales", "11278342400", 26);
         User user1 = new User(1L, "Thales", "11278342401", 26);
@@ -44,7 +44,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void cadastrarUsuario_LancaExceptionDeCpfInvalido() throws ExisteCpfCadastrado {
+    public void cadastrarUsuario_LancaExceptionDeCpfInvalido() throws CpfCreatedExistException {
         // cenario ou Arrange
         User user = new User(1L, "Thales", "1127842400", 26);
 
@@ -52,14 +52,14 @@ public class UserServiceTest {
         try {
             User userCadastrado = userServiceImp.cadastrar(user);
             Assert.fail("Deveria lançar exceção com cpf inválido");
-        } catch (CpfInvalidoExceptions e) {
+        } catch (CpfInvalidoException e) {
             // verificao ou assert
-            Assert.assertEquals(e.getClass(), CpfInvalidoExceptions.class);
+            Assert.assertEquals(e.getClass(), CpfInvalidoException.class);
         }
     }
 
     @Test
-    public void cadastrarUsuario_LancaExceptionDeCpfJaCadastrado() throws CpfInvalidoExceptions {
+    public void cadastrarUsuario_LancaExceptionDeCpfJaCadastrado() throws CpfInvalidoException {
         // cenario ou Arrange
         User user = new User(1L, "Thales", "11278432400", 26);
         Mockito.when(userRepository.findByCpf("11278432400")).thenReturn(user);
@@ -68,9 +68,9 @@ public class UserServiceTest {
         try {
             User userCadastrado = userServiceImp.cadastrar(user);
             Assert.fail("Deveria lançar exceção de cpf ja cadastrado no banco");
-        } catch (ExisteCpfCadastrado e) {
+        } catch (CpfCreatedExistException e) {
             // verificao ou Assert
-            Assert.assertEquals(e.getClass(), ExisteCpfCadastrado.class);
+            Assert.assertEquals(e.getClass(), CpfCreatedExistException.class);
         }
     }
 

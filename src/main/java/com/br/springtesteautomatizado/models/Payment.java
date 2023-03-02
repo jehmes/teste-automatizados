@@ -14,19 +14,20 @@ public class Payment {
     private Long id;
     @Column(nullable = false)
     private LocalDate dateTime;
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PaymentMethodsEnum paymentMethod;
-    @OneToOne(cascade = CascadeType.ALL)
-    private PaymentProof paymentProof;
     @Column(nullable = false)
     private BigDecimal amount;
 
-    public Payment(Long id, LocalDate date, PaymentMethodsEnum paymentMethod, PaymentProof paymentProof, BigDecimal amount) {
+    public Payment(Long id, LocalDate date, PaymentMethodsEnum paymentMethod, BigDecimal amount) {
         this.id = id;
         this.dateTime = date;
         this.paymentMethod = paymentMethod;
-        this.paymentProof = paymentProof;
         this.amount = amount;
+    }
+
+    public Payment() {
     }
 
     public Long getId() {
@@ -51,14 +52,6 @@ public class Payment {
 
     public void setPaymentMethod(PaymentMethodsEnum paymentMethod) {
         this.paymentMethod = paymentMethod;
-    }
-
-    public PaymentProof getPaymentProof() {
-        return paymentProof;
-    }
-
-    public void setPaymentProof(PaymentProof paymentProof) {
-        this.paymentProof = paymentProof;
     }
 
     public BigDecimal getAmount() {

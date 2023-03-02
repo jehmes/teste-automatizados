@@ -122,7 +122,7 @@ public class SaleServiceTest {
     @Test
     public void saveSale_ThrowUserException() throws Exception {
         //Arrange
-        Mockito.when(saleServiceImp.userRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.empty());
+        Mockito.when(userRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.empty());
 //        Mockito.when(saleServiceImp.userRepository.findById(Mockito.any(Integer.class))).thenReturn(Optional.of(Mockito.mock(User.class)));
 
         //Action
