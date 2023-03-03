@@ -4,7 +4,8 @@ public enum PaymentMethodsEnum {
 
     CARD("CARTAO"),
     BOLETO("BOLETO"),
-    PIX("PIX");
+    PIX("PIX"),
+    INVALID_PAYMENT_METHOD("METODO INVALIDO");
 
     private final String name;
 

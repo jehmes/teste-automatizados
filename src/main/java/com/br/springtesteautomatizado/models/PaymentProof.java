@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "GP_PAYMENT_PROOF")
@@ -85,5 +86,25 @@ public class PaymentProof {
 
     public void setPaymentMethod(PaymentMethodsEnum paymentMethod) {
         this.paymentMethod = paymentMethod;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PaymentProof that = (PaymentProof) o;
+        return Objects.equals(id, that.id) && Objects.equals(paymentDate, that.paymentDate) && Objects.equals(user, that.user) && Objects.equals(amountPaid, that.amountPaid) && paymentMethod == that.paymentMethod && Objects.equals(productList, that.productList);
+    }
+
+    @Override
+    public String toString() {
+        return "PaymentProof{" +
+                "id=" + id +
+                ", paymentDate=" + paymentDate +
+                ", user=" + user +
+                ", amountPaid=" + amountPaid +
+                ", paymentMethod=" + paymentMethod +
+                ", productList=" + productList +
+                '}';
     }
 }

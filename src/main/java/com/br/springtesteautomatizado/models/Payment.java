@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Entity
 @Table(name = "GP_PAYMENT")
@@ -60,5 +61,23 @@ public class Payment {
 
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Payment payment = (Payment) o;
+        return Objects.equals(id, payment.id) && Objects.equals(dateTime, payment.dateTime) && paymentMethod == payment.paymentMethod && Objects.equals(amount, payment.amount);
+    }
+
+    @Override
+    public String toString() {
+        return "Payment{" +
+                "id=" + id +
+                ", dateTime=" + dateTime +
+                ", paymentMethod=" + paymentMethod +
+                ", amount=" + amount +
+                '}';
     }
 }

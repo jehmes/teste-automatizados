@@ -31,7 +31,13 @@ public class PaymentByCardServiceImp {
         Payment newPayment = new Payment(null, sale.getDateTime(), PaymentMethodsEnum.CARD, sale.getAmount());
         paymentRepository.save(newPayment);
 
-        PaymentProof paymentProof = new PaymentProof(null, sale.getDateTime(), sale.getUser(), sale.getAmount(), sale.getPayment().getPaymentMethod(), sale.getProductList());
+        return generatePaymentProof(sale);
+    }
+
+    private PaymentProof generatePaymentProof(Sale sale) {
+        PaymentProof paymentProof = new PaymentProof(null, sale.getDateTime(), sale.getUser(), sale.getAmount(),
+                sale.getPayment().getPaymentMethod(), sale.getProductList().stream().toList());
+
         paymentProofRepository.save(paymentProof);
 
         return paymentProof;
