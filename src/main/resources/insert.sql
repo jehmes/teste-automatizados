@@ -1,4 +1,3 @@
-SELECT * FROM GP_USER;
 INSERT INTO GP_USER (id, cpf, idade, nome) VALUES (1, '123456789', 22, 'João' );
 INSERT INTO GP_USER (id, cpf, idade, nome) VALUES (2, '987654321', 22, 'Maria');
 INSERT INTO GP_USER (id, cpf, idade, nome) VALUES (3, '928371837', 22, 'Pedro');

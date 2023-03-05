@@ -1,6 +1,8 @@
 package com.br.springtesteautomatizado.models;
 
 import com.br.springtesteautomatizado.enums.PaymentMethodsEnum;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -9,12 +11,23 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "GP_PAYMENT")
+@Inheritance(strategy = InheritanceType.JOINED)
+@JsonTypeInfo(
+        include = JsonTypeInfo.As.EXISTING_PROPERTY,
+        property = "paymentMethod",
+        use = JsonTypeInfo.Id.NAME,
+        visible = true
+)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = CreditCardPayment.class, name = "CARD"),
+        @JsonSubTypes.Type(value = PixPayment.class, name = "PIX")
+})
 public class Payment {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
     @Column(nullable = false)
-    private LocalDate dateTime;
+    private LocalDate paymentDate;
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PaymentMethodsEnum paymentMethod;
@@ -23,7 +36,7 @@ public class Payment {
 
     public Payment(Long id, LocalDate date, PaymentMethodsEnum paymentMethod, BigDecimal amount) {
         this.id = id;
-        this.dateTime = date;
+        this.paymentDate = date;
         this.paymentMethod = paymentMethod;
         this.amount = amount;
     }
@@ -39,20 +52,12 @@ public class Payment {
         this.id = id;
     }
 
-    public LocalDate getDateTime() {
-        return dateTime;
+    public LocalDate getPaymentDate() {
+        return paymentDate;
     }
 
-    public void setDateTime(LocalDate dateTime) {
-        this.dateTime = dateTime;
-    }
-
-    public PaymentMethodsEnum getPaymentMethod() {
-        return paymentMethod;
-    }
-
-    public void setPaymentMethod(PaymentMethodsEnum paymentMethod) {
-        this.paymentMethod = paymentMethod;
+    public void setPaymentDate(LocalDate paymentDate) {
+        this.paymentDate = paymentDate;
     }
 
     public BigDecimal getAmount() {
@@ -63,20 +68,27 @@ public class Payment {
         this.amount = amount;
     }
 
+    public PaymentMethodsEnum getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(PaymentMethodsEnum paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Payment payment = (Payment) o;
-        return Objects.equals(id, payment.id) && Objects.equals(dateTime, payment.dateTime) && paymentMethod == payment.paymentMethod && Objects.equals(amount, payment.amount);
+        return Objects.equals(id, payment.id) && Objects.equals(paymentDate, payment.paymentDate) && Objects.equals(amount, payment.amount);
     }
 
     @Override
     public String toString() {
         return "Payment{" +
                 "id=" + id +
-                ", dateTime=" + dateTime +
-                ", paymentMethod=" + paymentMethod +
+                ", dateTime=" + paymentDate +
                 ", amount=" + amount +
                 '}';
     }

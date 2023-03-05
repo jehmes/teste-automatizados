@@ -3,40 +3,46 @@ package com.br.springtesteautomatizado.services;
 import com.br.springtesteautomatizado.enums.PaymentErrorsEnum;
 import com.br.springtesteautomatizado.enums.PaymentMethodsEnum;
 import com.br.springtesteautomatizado.exceptions.PaymentException;
+import com.br.springtesteautomatizado.interfaces.IPaymentService;
+import com.br.springtesteautomatizado.models.CreditCardPayment;
 import com.br.springtesteautomatizado.models.Payment;
 import com.br.springtesteautomatizado.models.PaymentProof;
 import com.br.springtesteautomatizado.models.Sale;
+import com.br.springtesteautomatizado.repositories.CreditCardPaymentRepository;
 import com.br.springtesteautomatizado.repositories.PaymentProofRepository;
 import com.br.springtesteautomatizado.repositories.PaymentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PaymentByCardServiceImp {
+@Qualifier("cardPaymentService")
+public class PaymentByCardServiceImp implements IPaymentService {
 
     @Autowired
     private PaymentRepository paymentRepository;
     @Autowired
     private PaymentProofRepository paymentProofRepository;
+    @Autowired
+    private CreditCardPaymentRepository creditCardPaymentRepository;
     public PaymentByCardServiceImp() {
     }
 
-    public PaymentProof payment(Sale sale) throws PaymentException {
-        String numberCard = "112233445566";
-
-        if (!authenticatedCard(numberCard)) {
+    @Override
+    public Payment doPayment(Sale sale) throws PaymentException {
+        CreditCardPayment payment = (CreditCardPayment) sale.getPayment();
+        if (!authenticatedCard(payment.getCardNumber())) {
             throw new PaymentException(PaymentErrorsEnum.CARD_INVALID.getName());
         }
 
-        Payment newPayment = new Payment(null, sale.getDateTime(), PaymentMethodsEnum.CARD, sale.getAmount());
-        paymentRepository.save(newPayment);
+        System.out.println("Aplicado pagamento na fatura do cartão!");
 
-        return generatePaymentProof(sale);
+        return payment;
     }
 
     private PaymentProof generatePaymentProof(Sale sale) {
         PaymentProof paymentProof = new PaymentProof(null, sale.getDateTime(), sale.getUser(), sale.getAmount(),
-                sale.getPayment().getPaymentMethod(), sale.getProductList().stream().toList());
+                PaymentMethodsEnum.CARD, sale.getProductList().stream().toList());
 
         paymentProofRepository.save(paymentProof);
 
@@ -44,6 +50,6 @@ public class PaymentByCardServiceImp {
     }
 
     private boolean authenticatedCard(String numberCard) {
-        return (numberCard.equals("112233445566"));
+        return (numberCard.equals("1234567890123456"));
     }
 }

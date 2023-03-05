@@ -3,52 +3,51 @@ package com.br.springtesteautomatizado.services;
 import com.br.springtesteautomatizado.enums.PaymentErrorsEnum;
 import com.br.springtesteautomatizado.enums.PaymentMethodsEnum;
 import com.br.springtesteautomatizado.exceptions.PaymentException;
+import com.br.springtesteautomatizado.interfaces.IPaymentService;
 import com.br.springtesteautomatizado.models.Payment;
 import com.br.springtesteautomatizado.models.PaymentProof;
-import com.br.springtesteautomatizado.models.Product;
+import com.br.springtesteautomatizado.models.PixPayment;
 import com.br.springtesteautomatizado.models.Sale;
 import com.br.springtesteautomatizado.repositories.PaymentProofRepository;
-import com.br.springtesteautomatizado.repositories.PaymentRepository;
+import com.br.springtesteautomatizado.repositories.PixPaymentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Service
-public class PaymentByPixServiceImp{
+@Qualifier("pixPaymentService")
+public class PaymentByPixServiceImp implements IPaymentService {
 
     @Autowired
-    private PaymentRepository paymentRepository;
+    private PixPaymentRepository paymentRepository;
     @Autowired
     private PaymentProofRepository paymentProofRepository;
     public PaymentByPixServiceImp() {
     }
 
-    public PaymentProof payment(Sale sale) throws PaymentException {
-        String pixKey = "99887766";
-        String bank = "brasil";
+    @Override
+    public Payment doPayment(Sale sale) throws PaymentException {
+        PixPayment payment = (PixPayment) sale.getPayment();
 
-        if (!authenticatedPix(pixKey, bank)) {
+        if (!authenticatedPix(payment.getPixKey())) {
             throw new PaymentException(PaymentErrorsEnum.PIX_INVALID.getName());
         }
 
-        Payment newPayment = new Payment(null, sale.getDateTime(), PaymentMethodsEnum.PIX, sale.getAmount());
-        paymentRepository.save(newPayment);
+        System.out.println("Pagamento debitado da conta!");
 
-        return generatePaymentProof(sale);
+        return payment;
     }
 
     private PaymentProof generatePaymentProof(Sale sale) {
         PaymentProof paymentProof = new PaymentProof(null, sale.getDateTime(), sale.getUser(), sale.getAmount(),
-                sale.getPayment().getPaymentMethod(), sale.getProductList().stream().toList());
+                PaymentMethodsEnum.PIX, sale.getProductList().stream().toList());
 
         paymentProofRepository.save(paymentProof);
 
         return paymentProof;
     }
 
-    private boolean authenticatedPix(String pixKey, String bank) {
-        return (pixKey.equals("99887766") && bank.equals("brasil"));
+    private boolean authenticatedPix(String pixKey) {
+        return (pixKey.equals("99887766"));
     }
 }

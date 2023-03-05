@@ -24,7 +24,7 @@ public class PaymentProof {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PaymentMethodsEnum paymentMethod;
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "paymentProof_Product",
             joinColumns = @JoinColumn(name = "payment_proof_id"),
             inverseJoinColumns = @JoinColumn(name = "product_id"))

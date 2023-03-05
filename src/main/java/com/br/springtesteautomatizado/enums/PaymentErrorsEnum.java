@@ -2,8 +2,8 @@ package com.br.springtesteautomatizado.enums;
 
 public enum PaymentErrorsEnum {
 
-    CARD_INVALID("CARTÃO INVÁLIDO"),
-    PIX_INVALID("PIX INVÁLIDO");
+    CARD_INVALID("Cartão inválido"),
+    PIX_INVALID("PIX inválido");
 
     private final String name;
 

@@ -18,9 +18,9 @@ public class Product {
     private BigDecimal price;
     @Column(nullable = false)
     private Integer quantity;
-    @ManyToMany(mappedBy = "productList")
+    @ManyToMany(mappedBy = "productList", cascade = CascadeType.ALL)
     private List<Sale> saleList;
-    @ManyToMany(mappedBy = "productList")
+    @ManyToMany(mappedBy = "productList", cascade = CascadeType.ALL)
     private List<PaymentProof> paymentProofList;
 
     public Product(Long id, String name, BigDecimal value, Integer quantity) {

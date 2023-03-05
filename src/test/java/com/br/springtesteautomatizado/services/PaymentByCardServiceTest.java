@@ -1,5 +1,6 @@
 package com.br.springtesteautomatizado.services;
 
+import com.br.springtesteautomatizado.enums.PaymentErrorsEnum;
 import com.br.springtesteautomatizado.enums.PaymentMethodsEnum;
 import com.br.springtesteautomatizado.exceptions.PaymentException;
 import com.br.springtesteautomatizado.models.*;
@@ -9,7 +10,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -33,7 +33,7 @@ public class PaymentByCardServiceTest {
     private User user;
     private Sale sale;
     private List<Product> productList;
-    private Payment payment;
+    private CreditCardPayment payment;
     private PaymentProof paymentProof;
 
     @Before
@@ -62,7 +62,7 @@ public class PaymentByCardServiceTest {
 
         sale.setProductList(productList);
 
-        payment = new Payment(null, LocalDate.now(), PaymentMethodsEnum.CARD, new BigDecimal("269.8"));
+        payment = new CreditCardPayment(null, LocalDate.now(), PaymentMethodsEnum.CARD, new BigDecimal("269.8"), "1234567890123456", "123", "Jehmes", LocalDate.now().plusDays(1));
 
         sale.setPayment(payment);
 
@@ -72,16 +72,22 @@ public class PaymentByCardServiceTest {
     @Test
     public void payment_doPayment() throws PaymentException {
 
-        Mockito.when(paymentRepository.save(payment)).thenReturn(payment);
-        Mockito.when(paymentProofRepository.save(paymentProof)).thenReturn(paymentProof);
+        Payment paymentResult = paymentByCardServiceImp.doPayment(sale);
+//        sale.setPayment(payment = new CreditCardPayment(null, LocalDate.now(), PaymentMethodsEnum.CARD, new BigDecimal("249.8"), "1234567890123456", "123", "Jehmes", LocalDate.now().plusDays(1)));
 
-        PaymentProof paymentProof = paymentByCardServiceImp.payment(sale);
-
-        Mockito.verify(paymentRepository, Mockito.times(1)).save(payment);
-        Mockito.verify(paymentProofRepository, Mockito.times(1)).save(paymentProof);
-
-        Assert.assertEquals(paymentByCardServiceImp.payment(sale), paymentProof);
+        Assert.assertEquals(paymentByCardServiceImp.doPayment(sale), paymentResult);
         Assert.assertNotNull(paymentProof);
+    }
+
+    @Test
+    public void payment_throw_PaymentException_InvalidCard() {
+        ((CreditCardPayment) sale.getPayment()).setCardNumber("123");
+        try {
+            paymentByCardServiceImp.doPayment(sale);
+            Assert.fail("Deveria lançar execção de cartão inválido!");
+        } catch (PaymentException e) {
+            Assert.assertEquals(e.getMessage(), PaymentErrorsEnum.CARD_INVALID.getName());
+        }
     }
 
 }

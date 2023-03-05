@@ -18,13 +18,14 @@ public class Sale {
             joinColumns = @JoinColumn(name = "sale_id"),
             inverseJoinColumns = @JoinColumn(name = "product_id"))
     private List<Product> productList;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private User user;
     @Column(nullable = false)
     private LocalDate dateTime;
     @Column(nullable = false)
     private BigDecimal amount;
-    @Transient
+    @JoinColumn(name = "payment_id")
+    @OneToOne(cascade = CascadeType.ALL)
     private Payment payment;
 
     public Sale(List<Product> productList, User user, LocalDate dateTime, BigDecimal totalPrice, Payment payment) {

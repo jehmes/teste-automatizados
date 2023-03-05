@@ -5,10 +5,7 @@ import com.br.springtesteautomatizado.enums.UserErrorsEnum;
 import com.br.springtesteautomatizado.exceptions.ProductException;
 import com.br.springtesteautomatizado.exceptions.UserException;
 import com.br.springtesteautomatizado.interfaces.ISaleService;
-import com.br.springtesteautomatizado.models.PaymentProof;
-import com.br.springtesteautomatizado.models.Product;
-import com.br.springtesteautomatizado.models.Sale;
-import com.br.springtesteautomatizado.models.User;
+import com.br.springtesteautomatizado.models.*;
 import com.br.springtesteautomatizado.repositories.ProductRepository;
 import com.br.springtesteautomatizado.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +28,7 @@ public class SaleController {
     private UserRepository userRepository;
 
     @PostMapping("/save")
-    public ResponseEntity<PaymentProof> save(@RequestBody Sale sale) throws Exception {
+    public ResponseEntity<Payment> save(@RequestBody Sale sale) throws Exception {
         User user = userRepository.findById(sale.getUser().getId())
                 .orElseThrow(() -> new UserException(UserErrorsEnum.ERROR_FIND_USER.getName()));
         sale.setUser(user);
