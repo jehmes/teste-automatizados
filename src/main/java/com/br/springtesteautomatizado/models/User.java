@@ -14,7 +14,7 @@ public class User {
     private String nome;
     @Column(nullable = false)
     private String cpf;
-    @Column(nullable = false)
+    @Column(nullable =false)
     private Integer idade;
 
     public User() {
