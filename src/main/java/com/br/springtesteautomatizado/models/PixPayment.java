@@ -1,11 +1,11 @@
 package com.br.springtesteautomatizado.models;
 
 import com.br.springtesteautomatizado.enums.PaymentMethodsEnum;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.PrimaryKeyJoinColumn;
-import jakarta.persistence.Table;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 

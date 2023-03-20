@@ -1,6 +1,7 @@
 package com.br.springtesteautomatizado.models;
 
-import jakarta.persistence.*;
+
+import javax.persistence.*;
 
 @Entity
 @Table(name = "GP_USER")

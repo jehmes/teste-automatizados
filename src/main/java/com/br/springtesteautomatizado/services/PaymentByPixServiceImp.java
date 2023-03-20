@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+
 @Service
 @Qualifier("pixPaymentService")
 public class PaymentByPixServiceImp implements IPaymentService {
@@ -40,7 +42,7 @@ public class PaymentByPixServiceImp implements IPaymentService {
 
     private PaymentProof generatePaymentProof(Sale sale) {
         PaymentProof paymentProof = new PaymentProof(null, sale.getDateTime(), sale.getUser(), sale.getAmount(),
-                PaymentMethodsEnum.PIX, sale.getProductList().stream().toList());
+                PaymentMethodsEnum.PIX, new ArrayList<>(sale.getProductList()));
 
         paymentProofRepository.save(paymentProof);
 

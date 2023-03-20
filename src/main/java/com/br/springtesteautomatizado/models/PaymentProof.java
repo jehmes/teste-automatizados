@@ -1,8 +1,8 @@
 package com.br.springtesteautomatizado.models;
 
 import com.br.springtesteautomatizado.enums.PaymentMethodsEnum;
-import jakarta.persistence.*;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;

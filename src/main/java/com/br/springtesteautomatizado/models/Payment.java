@@ -3,8 +3,8 @@ package com.br.springtesteautomatizado.models;
 import com.br.springtesteautomatizado.enums.PaymentMethodsEnum;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import jakarta.persistence.*;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
