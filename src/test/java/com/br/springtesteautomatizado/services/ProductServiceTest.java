@@ -18,7 +18,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -37,7 +39,6 @@ public class ProductServiceTest {
     @Before
     public void setup() {
         User user = new User();
-        user.setId(1L);
         user.setNome("Thales");
         user.setIdade(26);
         user.setCpf("11278342400");
@@ -47,16 +48,14 @@ public class ProductServiceTest {
                 new Product(2L, "Camisa", BigDecimal.valueOf(69.90), 2));
 
         Cart cart = new Cart();
-        cart.setId(1L);
         cart.setUser(user);
         cart.setProducts(productList);
         cart.setAmount(BigDecimal.valueOf(269.8));
 
         sale = new Sale();
-        sale.setId(1L);
         sale.setUser(user);
         sale.setAmount(BigDecimal.valueOf(269.8));
-        sale.setDateTime(LocalDate.now());
+        sale.setDateTime(LocalDateTime.now());
     }
 
     @Test
@@ -70,7 +69,8 @@ public class ProductServiceTest {
 
         //Assert
         Mockito.verify(productRepository, Mockito.times(1)).saveAll(Mockito.anyCollection());
-        Assert.assertEquals(sale.getDateTime(), LocalDate.now());
+        long milliSecondsValue = milliSecondsBetweenDate(sale.getDateTime(), LocalDateTime.now());
+        Assert.assertTrue(milliSecondsValue < 10.000);
     }
 
 
@@ -104,5 +104,10 @@ public class ProductServiceTest {
         //Assert
         Assert.assertEquals(0L, productList.get(0).getQuantity().longValue());
 //        Assert.assertEquals(0L, productList.get(1).getQuantity().longValue());
+    }
+
+    private long milliSecondsBetweenDate(LocalDateTime date1, LocalDateTime date2) {
+        Duration duration = Duration.between(date1, date2);
+        return Math.abs(duration.toMillis());
     }
 }

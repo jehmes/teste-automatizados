@@ -3,6 +3,7 @@ package com.br.springtesteautomatizado.models;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -20,14 +21,14 @@ public class Sale {
     @ManyToOne(cascade = CascadeType.ALL)
     private User user;
     @Column(nullable = false)
-    private LocalDate dateTime;
+    private LocalDateTime dateTime;
     @Column(nullable = false)
     private BigDecimal amount;
     @JoinColumn(name = "payment_id")
     @OneToOne(cascade = CascadeType.ALL)
     private Payment payment;
 
-    public Sale(List<Product> productList, User user, LocalDate dateTime, BigDecimal totalPrice, Payment payment) {
+    public Sale(List<Product> productList, User user, LocalDateTime dateTime, BigDecimal totalPrice, Payment payment) {
         this.productList = productList;
         this.user = user;
         this.dateTime = dateTime;
@@ -53,11 +54,11 @@ public class Sale {
         this.user = user;
     }
 
-    public LocalDate getDateTime() {
+    public LocalDateTime getDateTime() {
         return dateTime;
     }
 
-    public void setDateTime(LocalDate dateTime) {
+    public void setDateTime(LocalDateTime dateTime) {
         this.dateTime = dateTime;
     }
 

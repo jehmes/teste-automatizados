@@ -34,8 +34,7 @@ public class Payment {
     @Column(nullable = false)
     private BigDecimal amount;
 
-    public Payment(Long id, LocalDate date, PaymentMethodsEnum paymentMethod, BigDecimal amount) {
-        this.id = id;
+    public Payment(LocalDate date, PaymentMethodsEnum paymentMethod, BigDecimal amount) {
         this.paymentDate = date;
         this.paymentMethod = paymentMethod;
         this.amount = amount;

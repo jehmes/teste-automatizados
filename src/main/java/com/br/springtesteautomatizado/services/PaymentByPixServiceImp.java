@@ -20,10 +20,6 @@ import java.util.ArrayList;
 @Qualifier("pixPaymentService")
 public class PaymentByPixServiceImp implements IPaymentService {
 
-    @Autowired
-    private PixPaymentRepository paymentRepository;
-    @Autowired
-    private PaymentProofRepository paymentProofRepository;
     public PaymentByPixServiceImp() {
     }
 
@@ -38,15 +34,6 @@ public class PaymentByPixServiceImp implements IPaymentService {
         System.out.println("Pagamento debitado da conta!");
 
         return payment;
-    }
-
-    private PaymentProof generatePaymentProof(Sale sale) {
-        PaymentProof paymentProof = new PaymentProof(null, sale.getDateTime(), sale.getUser(), sale.getAmount(),
-                PaymentMethodsEnum.PIX, new ArrayList<>(sale.getProductList()));
-
-        paymentProofRepository.save(paymentProof);
-
-        return paymentProof;
     }
 
     private boolean authenticatedPix(String pixKey) {

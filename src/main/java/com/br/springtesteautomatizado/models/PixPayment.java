@@ -22,7 +22,7 @@ public class PixPayment extends Payment {
 
     public PixPayment() {}
 
-    public PixPayment(Long id, LocalDate date, PaymentMethodsEnum paymentMethod, BigDecimal amount, String pixKey, String description, LocalDate expirationDate) {
+    public PixPayment(LocalDate date, PaymentMethodsEnum paymentMethod, BigDecimal amount, String pixKey, String description, LocalDate expirationDate) {
         this.pixKey = pixKey;
         this.description = description;
         this.expirationDate = expirationDate;

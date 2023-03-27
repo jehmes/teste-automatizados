@@ -22,15 +22,8 @@ public class CreditCardPayment extends Payment{
     @Column(nullable = false)
     private LocalDate expirationDate;
 
-    public CreditCardPayment(Long id, LocalDate date, PaymentMethodsEnum paymentMethod, BigDecimal amount, String cardNumber, String cvv, String holderName, LocalDate expirationDate) {
-        super(id, date, paymentMethod, amount);
-        this.cardNumber = cardNumber;
-        this.cvv = cvv;
-        this.holderName = holderName;
-        this.expirationDate = expirationDate;
-    }
-
-    public CreditCardPayment(String cardNumber, String cvv, String holderName, LocalDate expirationDate) {
+    public CreditCardPayment(LocalDate date, PaymentMethodsEnum paymentMethod, BigDecimal amount, String cardNumber, String cvv, String holderName, LocalDate expirationDate) {
+        super(date, paymentMethod, amount);
         this.cardNumber = cardNumber;
         this.cvv = cvv;
         this.holderName = holderName;

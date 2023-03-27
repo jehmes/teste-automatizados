@@ -21,12 +21,6 @@ import java.util.ArrayList;
 @Qualifier("cardPaymentService")
 public class PaymentByCardServiceImp implements IPaymentService {
 
-    @Autowired
-    private PaymentRepository paymentRepository;
-    @Autowired
-    private PaymentProofRepository paymentProofRepository;
-    @Autowired
-    private CreditCardPaymentRepository creditCardPaymentRepository;
     public PaymentByCardServiceImp() {
     }
 
@@ -40,15 +34,6 @@ public class PaymentByCardServiceImp implements IPaymentService {
         System.out.println("Aplicado pagamento na fatura do cartão!");
 
         return payment;
-    }
-
-    private PaymentProof generatePaymentProof(Sale sale) {
-        PaymentProof paymentProof = new PaymentProof(null, sale.getDateTime(), sale.getUser(), sale.getAmount(),
-                PaymentMethodsEnum.CARD, new ArrayList<>(sale.getProductList()));
-
-        paymentProofRepository.save(paymentProof);
-
-        return paymentProof;
     }
 
     private boolean authenticatedCard(String numberCard) {
