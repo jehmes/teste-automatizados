@@ -1,6 +1,7 @@
 package com.br.springtesteautomatizado.services;
 
 import com.br.springtesteautomatizado.enums.ProductsErrorsEnum;
+import com.br.springtesteautomatizado.exceptions.DuplicateProductExcpetion;
 import com.br.springtesteautomatizado.exceptions.ProductException;
 import com.br.springtesteautomatizado.models.Cart;
 import com.br.springtesteautomatizado.models.Product;
@@ -9,7 +10,9 @@ import com.br.springtesteautomatizado.models.User;
 import com.br.springtesteautomatizado.repositories.ProductRepository;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +28,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static org.mockito.Mockito.*;
+
 @SpringBootTest
 @RunWith(SpringRunner.class)
 public class ProductServiceTest {
@@ -33,6 +38,8 @@ public class ProductServiceTest {
     private ProductServiceImp productService;
     @MockBean
     private ProductRepository productRepository;
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
     private Sale sale;
     private List<Product> productList;
 
@@ -56,6 +63,8 @@ public class ProductServiceTest {
         sale.setUser(user);
         sale.setAmount(BigDecimal.valueOf(269.8));
         sale.setDateTime(LocalDateTime.now());
+
+        when(productRepository.findByNames(productList)).thenReturn(Optional.empty());
     }
 
     @Test
@@ -68,7 +77,7 @@ public class ProductServiceTest {
         productService.subtractProducts(productList);
 
         //Assert
-        Mockito.verify(productRepository, Mockito.times(1)).saveAll(Mockito.anyCollection());
+        verify(productRepository, Mockito.times(1)).saveAll(Mockito.anyCollection());
         long milliSecondsValue = milliSecondsBetweenDate(sale.getDateTime(), LocalDateTime.now());
         Assert.assertTrue(milliSecondsValue < 10.000);
     }
@@ -104,6 +113,24 @@ public class ProductServiceTest {
         //Assert
         Assert.assertEquals(0L, productList.get(0).getQuantity().longValue());
 //        Assert.assertEquals(0L, productList.get(1).getQuantity().longValue());
+    }
+
+    @Test
+    public void saveProductList() throws DuplicateProductExcpetion {
+        productService.saveProductList(productList);
+
+        verify(productRepository).saveAll(productList);
+    }
+
+    @Test
+    public void throwsADuplicateProductExceptionWhenSaveAListOfProductsWithSomeDuplicateProduct() throws DuplicateProductExcpetion {
+        exception.expect(DuplicateProductExcpetion.class);
+
+        when(productRepository.findByNames(productList)).thenReturn(Optional.ofNullable(productList.get(0)));
+
+        productService.saveProductList(productList);
+
+        verify(productRepository, never()).saveAll(productList);
     }
 
     private long milliSecondsBetweenDate(LocalDateTime date1, LocalDateTime date2) {

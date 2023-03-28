@@ -20,8 +20,7 @@ public class User {
     public User() {
     }
 
-    public User(Long id, String nome, String cpf, Integer idade) {
-        this.id = id;
+    public User(String nome, String cpf, Integer idade) {
         this.nome = nome;
         this.cpf = cpf;
         this.idade = idade;

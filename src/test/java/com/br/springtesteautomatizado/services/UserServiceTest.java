@@ -4,7 +4,9 @@ import com.br.springtesteautomatizado.exceptions.CpfInvalidoException;
 import com.br.springtesteautomatizado.exceptions.CpfCreatedExistException;
 import com.br.springtesteautomatizado.models.User;
 import com.br.springtesteautomatizado.repositories.UserRepository;
+import com.br.springtesteautomatizado.validations.IValidationsCrud;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
@@ -17,22 +19,34 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class UserServiceTest {
 
     @Autowired
     private UserServiceImp userServiceImp;
-
     @MockBean
     private UserRepository userRepository;
+    @MockBean
+    private IValidationsCrud validationsCrud;
+
+    private User user;
+    private List<User> userList;
+    @Before
+    public void setUp() {
+        User user1 = new User("Jehmes", "11278342401", 26);
+        user = new User("Thales", "22314869488", 27);
+
+        userList = Arrays.asList(
+                user,
+                user1);
+    }
 
     @Test
-    public void cadastrarUsuario_RetornaUsuario() throws CpfInvalidoException, CpfCreatedExistException {
-        // cenario ou Arrange
-        User user = new User(1L, "Thales", "11278342400", 26);
-        User user1 = new User(1L, "Thales", "11278342401", 26);
-
+    public void createAValidUser() throws CpfInvalidoException, CpfCreatedExistException {
         Mockito.when(userRepository.save(user)).thenReturn(user);
 
         // acao ou Action
@@ -40,17 +54,17 @@ public class UserServiceTest {
 
         // verificao ou Assert
         Assert.assertEquals(user, userCadastrado);
-        Mockito.verify(userRepository, Mockito.times(1)).save(ArgumentMatchers.any(User.class));
+        verify(userRepository, Mockito.times(1)).save(ArgumentMatchers.any(User.class));
     }
 
     @Test
-    public void cadastrarUsuario_LancaExceptionDeCpfInvalido() throws CpfCreatedExistException {
+    public void throwsCpfInvalidWhenTryCreateAUser() throws CpfCreatedExistException, CpfInvalidoException {
         // cenario ou Arrange
-        User user = new User(1L, "Thales", "1127842400", 26);
-
+        user.setCpf("123");
+        when(validationsCrud.validarCpf(user.getCpf())).thenThrow(CpfInvalidoException.class);
         // acao ou Action
         try {
-            User userCadastrado = userServiceImp.cadastrar(user);
+            userServiceImp.cadastrar(user);
             Assert.fail("Deveria lançar exceção com cpf inválido");
         } catch (CpfInvalidoException e) {
             // verificao ou assert
@@ -59,14 +73,13 @@ public class UserServiceTest {
     }
 
     @Test
-    public void cadastrarUsuario_LancaExceptionDeCpfJaCadastrado() throws CpfInvalidoException {
+    public void throwsCpfAlreadyRegisteredWhenTryCreateAUser() throws CpfInvalidoException, CpfCreatedExistException {
         // cenario ou Arrange
-        User user = new User(1L, "Thales", "11278432400", 26);
-        Mockito.when(userRepository.findByCpf("11278432400")).thenReturn(user);
-
+        Mockito.when(userRepository.findByCpf("22314869488")).thenReturn(user);
+        when(validationsCrud.validarSeExisteCpfCadastrado(user.getCpf())).thenThrow(CpfCreatedExistException.class);
         // acao ou Action
         try {
-            User userCadastrado = userServiceImp.cadastrar(user);
+            userServiceImp.cadastrar(user);
             Assert.fail("Deveria lançar exceção de cpf ja cadastrado no banco");
         } catch (CpfCreatedExistException e) {
             // verificao ou Assert
@@ -75,11 +88,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void obterTodosUsuarios_RetornarUsuarios() {
-        //Arrange
-        List<User> userList = Arrays.asList(
-                new User(1L, "Thales", "11278342400", 23),
-                new User(2L, "Thales1", "11278342401", 25));
+    public void getAllUser() {
         Mockito.when(userServiceImp.obterTodosUsuarios()).thenReturn(userList);
 
         //Action
@@ -87,7 +96,14 @@ public class UserServiceTest {
 
         //Assert
         Assert.assertEquals(userList, allUsers);
-        Mockito.verify(userRepository, Mockito.times(1)).findAll();
+        verify(userRepository, Mockito.times(1)).findAll();
     }
 
+    @Test
+    public void editUserWithValidCpf() throws CpfCreatedExistException, CpfInvalidoException {
+        userServiceImp.editar(user);
+
+        verify(validationsCrud).validarCpf(user.getCpf());
+        verify(validationsCrud).validarSeExisteCpfCadastrado(user.getCpf());
+    }
 }

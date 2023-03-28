@@ -1,6 +1,7 @@
 package com.br.springtesteautomatizado.services;
 
 import com.br.springtesteautomatizado.enums.ProductsErrorsEnum;
+import com.br.springtesteautomatizado.exceptions.DuplicateProductExcpetion;
 import com.br.springtesteautomatizado.exceptions.ProductException;
 import com.br.springtesteautomatizado.interfaces.IProductService;
 import com.br.springtesteautomatizado.models.Product;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProductServiceImp implements IProductService {
@@ -39,17 +41,12 @@ public class ProductServiceImp implements IProductService {
     }
 
     @Override
-    public List<Product> createProducts() {
-        List<Product> productList = new ArrayList<>();
-        Product p1 =new Product(null, "Product 1", new BigDecimal("50.00"), 5);
-        Product p2 =new Product(null, "Product 2", new BigDecimal("30.00"), 5);
-        Product p3 =new Product(null, "Product 3", new BigDecimal("70.00"),5);
-        productList.add(p1);
-        productList.add(p2);
-        productList.add(p3);
-        productRepository.saveAll(productList);
-        return productList;
+    public List<Product> saveProductList(List<Product> products) throws DuplicateProductExcpetion {
+        Optional<Product> productOptional = productRepository.findByNames(products);
+        if (productOptional.isPresent()) {
+            throw new DuplicateProductExcpetion();
+        }
+        return (List<Product>) productRepository.saveAll(products);
     }
-
 
 }
