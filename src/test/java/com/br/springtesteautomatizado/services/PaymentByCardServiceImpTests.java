@@ -6,8 +6,8 @@ import com.br.springtesteautomatizado.enums.PaymentMethodsEnum;
 import com.br.springtesteautomatizado.exceptions.PaymentException;
 import com.br.springtesteautomatizado.models.*;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,13 +21,13 @@ import java.util.List;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
-public class PaymentByCardServiceTest {
+class PaymentByCardServiceImpTests {
 
     @Autowired
     private PaymentByCardServiceImp paymentByCardServiceImp;
     private Sale sale;
 
-    @Before
+    @BeforeEach
     public void setup() {
         User user = new User();
         user.setNome("Thales");
@@ -35,8 +35,8 @@ public class PaymentByCardServiceTest {
         user.setCpf("11278342400");
 
         List<Product> productList = Arrays.asList(
-                new Product(1L, "Sapato", BigDecimal.valueOf(199.90), 5),
-                new Product(2L, "Camisa", BigDecimal.valueOf(69.90), 2));
+                new Product("Sapato", BigDecimal.valueOf(199.90), 5),
+                new Product("Camisa", BigDecimal.valueOf(69.90), 2));
 
         Cart cart = new Cart();
         cart.setUser(user);
@@ -57,7 +57,7 @@ public class PaymentByCardServiceTest {
     }
 
     @Test
-    public void doPaymentWithValidCard() throws PaymentException {
+    public void testDoPaymentWithValidCard() throws PaymentException {
 
         Payment paymentResult = paymentByCardServiceImp.doPayment(sale);
 //        sale.setPayment(payment = new CreditCardPayment(null, LocalDate.now(), PaymentMethodsEnum.CARD, new BigDecimal("249.8"), "1234567890123456", "123", "Jehmes", LocalDate.now().plusDays(1)));
@@ -66,7 +66,7 @@ public class PaymentByCardServiceTest {
     }
 
     @Test
-    public void throwAPaymentExceptionWhenUseInvalidCard() {
+    public void testThrowAPaymentExceptionWhenUseInvalidCard() {
         ((CreditCardPayment) sale.getPayment()).setCardNumber("123");
         try {
             paymentByCardServiceImp.doPayment(sale);

@@ -25,16 +25,19 @@ public class ProductServiceImp implements IProductService {
         List<Product> updateProducts = new ArrayList<>();
 
         for (Product product : products) {
-            Product productFromDB = productRepository.findById(product.getId()).get();
+            Optional<Product> productFromDB = productRepository.findById(product.getId());
+            if (productFromDB.isEmpty()) {
+                throw new ProductException("Not Found");
+            }
 
-            if (productFromDB.getQuantity() - product.getQuantity() == 0) {
-                productFromDB.setQuantity(0);
-                updateProducts.add(productFromDB);
-            } else if (product.getQuantity() > productFromDB.getQuantity()) {
+            if (productFromDB.get().getQuantity() - product.getQuantity() == 0) {
+                productFromDB.get().setQuantity(0);
+                updateProducts.add(productFromDB.get());
+            } else if (product.getQuantity() > productFromDB.get().getQuantity()) {
                 throw new ProductException(ProductsErrorsEnum.ERROR_NEGATIVE_STOCK.getName());
             } else {
-                productFromDB.setQuantity(productFromDB.getQuantity() - product.getQuantity());
-                updateProducts.add(productFromDB);
+                productFromDB.get().setQuantity(productFromDB.get().getQuantity() - product.getQuantity());
+                updateProducts.add(productFromDB.get());
             }
         }
         productRepository.saveAll(updateProducts);

@@ -22,6 +22,12 @@ public class Product {
     @ManyToMany(mappedBy = "productList", cascade = CascadeType.ALL)
     private List<PaymentProof> paymentProofList;
 
+    public Product(String name, BigDecimal value, Integer quantity) {
+        this.name = name;
+        this.price = value;
+        this.quantity = quantity;
+    }
+
     public Product(Long id, String name, BigDecimal value, Integer quantity) {
         this.id = id;
         this.name = name;

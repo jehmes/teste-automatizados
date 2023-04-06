@@ -9,9 +9,9 @@ import com.br.springtesteautomatizado.models.Sale;
 import com.br.springtesteautomatizado.models.User;
 import com.br.springtesteautomatizado.repositories.ProductRepository;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -22,37 +22,38 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.math.BigDecimal;
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
-public class ProductServiceTest {
+class ProductServiceImpTests {
 
     @Autowired
     private ProductServiceImp productService;
     @MockBean
     private ProductRepository productRepository;
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
     private Sale sale;
     private List<Product> productList;
+    private List<Product> productList2;
 
-    @Before
+    @BeforeEach
     public void setup() {
         User user = new User();
         user.setNome("Thales");
         user.setIdade(26);
         user.setCpf("11278342400");
 
+//        productList = Arrays.asList(
+//                new Product("Sapato", BigDecimal.valueOf(199.90), 5),
+//                new Product("Camisa", BigDecimal.valueOf(69.90), 2));
         productList = Arrays.asList(
-                new Product(1L, "Sapato", BigDecimal.valueOf(199.90), 5),
-                new Product(2L, "Camisa", BigDecimal.valueOf(69.90), 2));
+                new Product("Tenis", BigDecimal.valueOf(199.90), 4));
 
         Cart cart = new Cart();
         cart.setUser(user);
@@ -68,10 +69,9 @@ public class ProductServiceTest {
     }
 
     @Test
-    public void subtractProducts_Void() throws Exception {
+    public void subtractProducts_doTheSubtract() throws Exception {
         //Arrange
         Mockito.when(productRepository.findById(productList.get(0).getId())).thenReturn(Optional.of(productList.get(0)));
-        Mockito.when(productRepository.findById(productList.get(1).getId())).thenReturn(Optional.of(productList.get(1)));
 
         //Action
         productService.subtractProducts(productList);
@@ -84,11 +84,10 @@ public class ProductServiceTest {
 
 
     @Test
-    public void subtractProducts_throwProductExcpetion_negativeStock() {
+    public void testSubtractProducts_throwProductExcpetion_negativeStock() {
         //Arrange
-        Product productNegativeStock = new Product(2L, "Camisa", BigDecimal.valueOf(69.90), 1);
-        Mockito.when(productRepository.findById(productList.get(0).getId())).thenReturn(Optional.of(productList.get(0)));
-        Mockito.when(productRepository.findById(productList.get(1).getId())).thenReturn(Optional.of(productNegativeStock));
+        Product dbProduct = new Product(null, null, 1);
+        Mockito.when(productRepository.findById(productList.get(0).getId())).thenReturn(Optional.of(dbProduct));
 
         try {
             //Action
@@ -101,35 +100,38 @@ public class ProductServiceTest {
     }
 
     @Test
-    public void subtractProducts_setQuantity0WhenProductFromDBIs0() throws ProductException {
+    public void testSubtractProducts_setQuantityTo0ToDbProductWhenClearStock() throws ProductException {
         //Arrange
-        Product dbProductQuantity2 = new Product(2L, "Camisa", BigDecimal.valueOf(69.90), 4);
-        Mockito.when(productRepository.findById(productList.get(0).getId())).thenReturn(Optional.of(productList.get(0)));
-        Mockito.when(productRepository.findById(productList.get(1).getId())).thenReturn(Optional.of(dbProductQuantity2));
+        Product dbProduct = new Product(null, null, 4);
+        Mockito.when(productRepository.findById(productList.get(0).getId())).thenReturn(Optional.of(dbProduct));
 
         //Action
         productService.subtractProducts(productList);
 
         //Assert
-        Assert.assertEquals(0L, productList.get(0).getQuantity().longValue());
+        Assert.assertEquals(0L, dbProduct.getQuantity().longValue());
 //        Assert.assertEquals(0L, productList.get(1).getQuantity().longValue());
     }
 
     @Test
-    public void saveProductList() throws DuplicateProductExcpetion {
+    public void testSaveProductList() throws DuplicateProductExcpetion {
         productService.saveProductList(productList);
 
         verify(productRepository).saveAll(productList);
     }
 
     @Test
-    public void throwsADuplicateProductExceptionWhenSaveAListOfProductsWithSomeDuplicateProduct() throws DuplicateProductExcpetion {
-        exception.expect(DuplicateProductExcpetion.class);
+    public void testThrowsADuplicateProductExceptionWhenSaveAListOfProductsWithSomeDuplicateProduct() throws DuplicateProductExcpetion {
+//        exception.expect(DuplicateProductExcpetion.class);
 
         when(productRepository.findByNames(productList)).thenReturn(Optional.ofNullable(productList.get(0)));
 
-        productService.saveProductList(productList);
 
+        DuplicateProductExcpetion exception = assertThrows(DuplicateProductExcpetion.class, () -> {
+            productService.saveProductList(productList);
+        });
+
+        Assert.assertEquals(exception.getClass(), DuplicateProductExcpetion.class);
         verify(productRepository, never()).saveAll(productList);
     }
 
