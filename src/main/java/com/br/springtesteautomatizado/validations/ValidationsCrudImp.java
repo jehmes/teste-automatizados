@@ -1,11 +1,12 @@
 package com.br.springtesteautomatizado.validations;
 
 
+import com.br.springtesteautomatizado.enums.UserErrorsEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.br.springtesteautomatizado.exceptions.CpfInvalidoException;
-import com.br.springtesteautomatizado.exceptions.CpfCreatedExistException;
+import com.br.springtesteautomatizado.exceptions.CpfAlreadyExistException;
 import com.br.springtesteautomatizado.repositories.UserRepository;
 
 @Component
@@ -22,9 +23,9 @@ public class ValidationsCrudImp implements IValidationsCrud {
 	}
 
 	@Override
-	public boolean validarSeExisteCpfCadastrado(String cpf) throws CpfCreatedExistException {
+	public boolean validarSeExisteCpfCadastrado(String cpf) throws CpfAlreadyExistException {
 		if (userRepository.findByCpf(cpf) != null)
-			throw new CpfCreatedExistException();
+			throw new CpfAlreadyExistException(UserErrorsEnum.CPF_ALREADY_EXISTS.getName());
 		return true;
 	}
 

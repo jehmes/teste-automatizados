@@ -2,6 +2,7 @@ package com.br.springtesteautomatizado.models;
 
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "GP_USER")
@@ -11,27 +12,27 @@ public class User {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
     @Column(nullable = false)
-    private String nome;
+    private String name;
     @Column(nullable = false)
     private String cpf;
     @Column(nullable =false)
-    private Integer idade;
+    private Integer age;
 
     public User() {
     }
 
     public User(String nome, String cpf, Integer idade) {
-        this.nome = nome;
+        this.name = nome;
         this.cpf = cpf;
-        this.idade = idade;
+        this.age = idade;
     }
 
-    public String getNome() {
-        return nome;
+    public String getName() {
+        return name;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setName(String nome) {
+        this.name = nome;
     }
 
     public String getCpf() {
@@ -42,12 +43,12 @@ public class User {
         this.cpf = cpf;
     }
 
-    public Integer getIdade() {
-        return idade;
+    public Integer getAge() {
+        return age;
     }
 
-    public void setIdade(Integer idade) {
-        this.idade = idade;
+    public void setAge(Integer idade) {
+        this.age = idade;
     }
 
     public Long getId() {
@@ -59,8 +60,21 @@ public class User {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(name, user.name) && Objects.equals(cpf, user.cpf) && Objects.equals(age, user.age);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, cpf, age);
+    }
+
+    @Override
     public String toString() {
-        return "User [nome=" + nome + ", cpf=" + cpf + ", idade=" + idade + "]";
+        return "User [nome=" + name + ", cpf=" + cpf + ", idade=" + age + "]";
     }
 
 }

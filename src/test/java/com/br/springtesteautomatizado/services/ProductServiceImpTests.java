@@ -42,8 +42,8 @@ class ProductServiceImpTests {
     @BeforeEach
     public void setup() {
         User user = new User();
-        user.setNome("Thales");
-        user.setIdade(26);
+        user.setName("Thales");
+        user.setAge(26);
         user.setCpf("11278342400");
 
         productList = List.of(

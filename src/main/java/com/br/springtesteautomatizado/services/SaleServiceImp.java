@@ -35,7 +35,7 @@ public class SaleServiceImp implements ISaleService {
     @Override
     public Payment saveSale(Sale sale) throws ProductNegativeStockException, ProductNotFoundException, PaymentInvalidException {
         if (userRepository.findById(sale.getUser().getId()).isEmpty()) {
-            throw new ProductNotFoundException(UserErrorsEnum.ERROR_FIND_USER.getName());
+            throw new ProductNotFoundException(UserErrorsEnum.USER_NOT_FOUND.getName());
         }
 
         List<String> productsNames = sale.getProductList().stream().map(Product::getName).collect(Collectors.toList());

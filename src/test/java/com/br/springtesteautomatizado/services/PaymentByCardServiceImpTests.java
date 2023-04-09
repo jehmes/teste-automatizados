@@ -14,7 +14,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -30,8 +29,8 @@ class PaymentByCardServiceImpTests {
     @BeforeEach
     public void setup() {
         User user = new User();
-        user.setNome("Thales");
-        user.setIdade(26);
+        user.setName("Thales");
+        user.setAge(26);
         user.setCpf("11278342400");
 
         List<Product> productList = Arrays.asList(

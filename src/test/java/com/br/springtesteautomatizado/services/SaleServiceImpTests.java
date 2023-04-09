@@ -15,7 +15,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -43,8 +42,8 @@ class SaleServiceImpTests {
     @BeforeEach
     public void setup() {
         user.setId(1L);
-        user.setNome("Thales");
-        user.setIdade(26);
+        user.setName("Thales");
+        user.setAge(26);
         user.setCpf("11278342400");
 
         List<Product> productList = Arrays.asList(

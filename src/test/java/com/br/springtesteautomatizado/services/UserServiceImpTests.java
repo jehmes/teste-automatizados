@@ -1,7 +1,7 @@
 package com.br.springtesteautomatizado.services;
 
 import com.br.springtesteautomatizado.exceptions.CpfInvalidoException;
-import com.br.springtesteautomatizado.exceptions.CpfCreatedExistException;
+import com.br.springtesteautomatizado.exceptions.CpfAlreadyExistException;
 import com.br.springtesteautomatizado.models.User;
 import com.br.springtesteautomatizado.repositories.UserRepository;
 import com.br.springtesteautomatizado.validations.IValidationsCrud;
@@ -46,11 +46,11 @@ class UserServiceImpTests {
     }
 
     @Test
-    void shouldCreateAValidUser() throws CpfInvalidoException, CpfCreatedExistException {
+    void shouldCreateAValidUser() throws CpfInvalidoException, CpfAlreadyExistException {
         Mockito.when(userRepository.save(user)).thenReturn(user);
 
         // acao ou Action
-        User userCadastrado = userServiceImp.cadastrar(user);
+        User userCadastrado = userServiceImp.create(user);
 
         // verificao ou Assert
         Assert.assertEquals(user, userCadastrado);
@@ -58,13 +58,13 @@ class UserServiceImpTests {
     }
 
     @Test
-    void shouldThrowsCpfInvalidWhenTryCreateAInvalidUser() throws CpfCreatedExistException, CpfInvalidoException {
+    void shouldThrowsCpfInvalidWhenTryCreateAInvalidUser() throws CpfAlreadyExistException, CpfInvalidoException {
         // cenario ou Arrange
         user.setCpf("123");
         when(validationsCrud.validarCpf(user.getCpf())).thenThrow(CpfInvalidoException.class);
         // acao ou Action
         try {
-            userServiceImp.cadastrar(user);
+            userServiceImp.create(user);
             Assert.fail("Deveria lançar exceção com cpf inválido");
         } catch (CpfInvalidoException e) {
             // verificao ou assert
@@ -73,17 +73,17 @@ class UserServiceImpTests {
     }
 
     @Test
-    void shouldThrowCpfAlreadyRegisteredWhenTryCreateAInvalidUser() throws CpfInvalidoException, CpfCreatedExistException {
+    void shouldThrowCpfAlreadyRegisteredWhenTryCreateAInvalidUser() throws CpfInvalidoException, CpfAlreadyExistException {
         // cenario ou Arrange
         Mockito.when(userRepository.findByCpf("22314869488")).thenReturn(user);
-        when(validationsCrud.validarSeExisteCpfCadastrado(user.getCpf())).thenThrow(CpfCreatedExistException.class);
+        when(validationsCrud.validarSeExisteCpfCadastrado(user.getCpf())).thenThrow(CpfAlreadyExistException.class);
         // acao ou Action
         try {
-            userServiceImp.cadastrar(user);
+            userServiceImp.create(user);
             Assert.fail("Deveria lançar exceção de cpf ja cadastrado no banco");
-        } catch (CpfCreatedExistException e) {
+        } catch (CpfAlreadyExistException e) {
             // verificao ou Assert
-            Assert.assertEquals(e.getClass(), CpfCreatedExistException.class);
+            Assert.assertEquals(e.getClass(), CpfAlreadyExistException.class);
         }
     }
 
@@ -100,7 +100,7 @@ class UserServiceImpTests {
     }
 
     @Test
-    void shouldEditAValidUser() throws CpfCreatedExistException, CpfInvalidoException {
+    void shouldEditAValidUser() throws CpfAlreadyExistException, CpfInvalidoException {
         userServiceImp.editar(user);
 
         verify(validationsCrud).validarCpf(user.getCpf());

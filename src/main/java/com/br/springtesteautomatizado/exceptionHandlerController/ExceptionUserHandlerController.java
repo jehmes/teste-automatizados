@@ -15,7 +15,7 @@ import java.util.Date;
 @RestController
 public class ExceptionUserHandlerController {
     @ExceptionHandler(UserNotFoundException.class)
-    public final ResponseEntity<ExceptionResponse> handleDuplicateProductException(UserNotFoundException ex, WebRequest request) {
+    public final ResponseEntity<ExceptionResponse> handleUserNotFoundException(UserNotFoundException ex, WebRequest request) {
         ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
                 request.getDescription(false), HttpStatus.NOT_FOUND.getReasonPhrase(), HttpStatus.NOT_FOUND.value());
         ex.printStackTrace();

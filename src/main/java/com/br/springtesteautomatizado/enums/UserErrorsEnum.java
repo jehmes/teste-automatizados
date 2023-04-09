@@ -2,7 +2,8 @@ package com.br.springtesteautomatizado.enums;
 
 public enum UserErrorsEnum {
 
-    ERROR_FIND_USER("Erro ao encontrar o usuário");
+    USER_NOT_FOUND("User not found"),
+    CPF_ALREADY_EXISTS("CPF already exists");
 
     private final String name;
 
