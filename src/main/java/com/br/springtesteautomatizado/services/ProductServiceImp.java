@@ -9,10 +9,10 @@ import com.br.springtesteautomatizado.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImp implements IProductService {
@@ -45,9 +45,10 @@ public class ProductServiceImp implements IProductService {
 
     @Override
     public List<Product> saveProductList(List<Product> products) throws DuplicateProductExcpetion {
-        Optional<Product> productOptional = productRepository.findByNames(products);
-        if (productOptional.isPresent()) {
-            throw new DuplicateProductExcpetion();
+        List<String> productsNames = products.stream().map(Product::getName).collect(Collectors.toList());
+        Integer existProduct = productRepository.findByProductsName(productsNames);
+        if (existProduct > 0) {
+            throw new DuplicateProductExcpetion("Product already exists");
         }
         return (List<Product>) productRepository.saveAll(products);
     }

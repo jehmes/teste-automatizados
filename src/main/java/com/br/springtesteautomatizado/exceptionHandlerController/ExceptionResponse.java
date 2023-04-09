@@ -5,19 +5,24 @@ import java.util.Date;
 public class ExceptionResponse {
     private Date timestamp;
     private String message;
-    private String details;
-    private String httpCodeMessage;
+    private String path;
+    private String error;
+    private Integer status;
 
-    public ExceptionResponse(Date timestamp, String message, String details, String httpCodeMessage) {
-        super();
-        this.timestamp = timestamp;
-        this.message = message;
-        this.details = details;
-        this.httpCodeMessage=httpCodeMessage;
+    public ExceptionResponse() {
     }
 
-    public String getHttpCodeMessage() {
-        return httpCodeMessage;
+    public ExceptionResponse(Date timestamp, String message, String details, String error, Integer status) {
+        super();
+        this.timestamp = timestamp;
+        this.status = status;
+        this.error = error;
+        this.path = details;
+        this.message = message;
+    }
+
+    public String getError() {
+        return error;
     }
 
     public Date getTimestamp() {
@@ -28,7 +33,11 @@ public class ExceptionResponse {
         return message;
     }
 
-    public String getDetails() {
-        return details;
+    public String getPath() {
+        return path;
+    }
+
+    public Integer getStatus() {
+        return status;
     }
 }

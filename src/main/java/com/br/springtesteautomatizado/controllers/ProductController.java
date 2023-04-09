@@ -22,12 +22,8 @@ public class ProductController {
     private IProductService iProductService;
 
     @PostMapping("/create")
-    public ResponseEntity<Object> createListProducts(@RequestBody List<Product> products) {
-        try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(iProductService.saveProductList(products));
-        } catch (DuplicateProductExcpetion e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Product already exist");
-        }
+    public ResponseEntity<Object> createListProducts(@RequestBody List<Product> products) throws DuplicateProductExcpetion {
+        return ResponseEntity.status(HttpStatus.CREATED).body(iProductService.saveProductList(products));
     }
-
 }
+

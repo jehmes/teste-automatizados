@@ -3,13 +3,12 @@ package com.br.springtesteautomatizado.repositories;
 import com.br.springtesteautomatizado.models.Product;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
-import java.util.Optional;
 
 
 public interface ProductRepository extends CrudRepository<Product, Long> {
-    @Query(value = "QUERY...", nativeQuery = true)
-    Optional<Product> findByNames(List<Product> productList);
+    @Query("SELECT count(1) FROM Product p WHERE p.name IN (:productsNames)")
+    Integer findByProductsName(@Param("productsNames") List<String> productsNames);
 }

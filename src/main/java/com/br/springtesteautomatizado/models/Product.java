@@ -3,6 +3,7 @@ package com.br.springtesteautomatizado.models;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "GP_PRODUCT")
@@ -82,5 +83,27 @@ public class Product {
     }
     public void setPaymentProofList(List<PaymentProof> paymentProofList) {
         this.paymentProofList = paymentProofList;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return Objects.equals(name, product.name) && Objects.equals(price, product.price) && Objects.equals(quantity, product.quantity);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, price, quantity);
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "name='" + name + '\'' +
+                ", price=" + price +
+                ", quantity=" + quantity +
+                '}';
     }
 }

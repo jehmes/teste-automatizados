@@ -9,10 +9,8 @@ import com.br.springtesteautomatizado.models.Sale;
 import com.br.springtesteautomatizado.models.User;
 import com.br.springtesteautomatizado.repositories.ProductRepository;
 import org.junit.Assert;
-import org.junit.Rule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +38,6 @@ class ProductServiceImpTests {
     private ProductRepository productRepository;
     private Sale sale;
     private List<Product> productList;
-    private List<Product> productList2;
 
     @BeforeEach
     public void setup() {
@@ -49,9 +46,6 @@ class ProductServiceImpTests {
         user.setIdade(26);
         user.setCpf("11278342400");
 
-//        productList = Arrays.asList(
-//                new Product("Sapato", BigDecimal.valueOf(199.90), 5),
-//                new Product("Camisa", BigDecimal.valueOf(69.90), 2));
         productList = Arrays.asList(
                 new Product("Tenis", BigDecimal.valueOf(199.90), 4));
 
@@ -65,11 +59,11 @@ class ProductServiceImpTests {
         sale.setAmount(BigDecimal.valueOf(269.8));
         sale.setDateTime(LocalDateTime.now());
 
-        when(productRepository.findByNames(productList)).thenReturn(Optional.empty());
+        when(productRepository.findByProductsName(Mockito.anyList())).thenReturn(0);
     }
 
     @Test
-    public void subtractProducts_doTheSubtract() throws Exception {
+    public void subtractProducts_doTheSubtractAndCompareDatePeriod() throws Exception {
         //Arrange
         Mockito.when(productRepository.findById(productList.get(0).getId())).thenReturn(Optional.of(productList.get(0)));
 
@@ -79,7 +73,7 @@ class ProductServiceImpTests {
         //Assert
         verify(productRepository, Mockito.times(1)).saveAll(Mockito.anyCollection());
         long milliSecondsValue = milliSecondsBetweenDate(sale.getDateTime(), LocalDateTime.now());
-        Assert.assertTrue(milliSecondsValue < 10.000);
+        Assert.assertTrue(milliSecondsValue < 10000);
     }
 
 
@@ -123,8 +117,7 @@ class ProductServiceImpTests {
     @Test
     public void testThrowsADuplicateProductExceptionWhenSaveAListOfProductsWithSomeDuplicateProduct() throws DuplicateProductExcpetion {
 //        exception.expect(DuplicateProductExcpetion.class);
-
-        when(productRepository.findByNames(productList)).thenReturn(Optional.ofNullable(productList.get(0)));
+        when(productRepository.findByProductsName(Mockito.anyList())).thenReturn(1);
 
 
         DuplicateProductExcpetion exception = assertThrows(DuplicateProductExcpetion.class, () -> {

@@ -1,13 +1,10 @@
 package com.br.springtesteautomatizado.controllers;
 
-import com.br.springtesteautomatizado.enums.ProductsErrorsEnum;
-import com.br.springtesteautomatizado.enums.UserErrorsEnum;
+import com.br.springtesteautomatizado.exceptions.PaymentException;
 import com.br.springtesteautomatizado.exceptions.ProductException;
 import com.br.springtesteautomatizado.exceptions.UserException;
 import com.br.springtesteautomatizado.interfaces.ISaleService;
-import com.br.springtesteautomatizado.models.*;
-import com.br.springtesteautomatizado.repositories.ProductRepository;
-import com.br.springtesteautomatizado.repositories.UserRepository;
+import com.br.springtesteautomatizado.models.Sale;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,22 +19,19 @@ public class SaleController {
 
     @Autowired
     private ISaleService iSaleService;
-    @Autowired
-    private ProductRepository productRepository;
-    @Autowired
-    private UserRepository userRepository;
 
     @PostMapping("/save")
-    public ResponseEntity<Payment> save(@RequestBody Sale sale) throws Exception {
-        User user = userRepository.findById(sale.getUser().getId())
-                .orElseThrow(() -> new UserException(UserErrorsEnum.ERROR_FIND_USER.getName()));
-        sale.setUser(user);
-
-        for (Product product : sale.getProductList()) {
-            productRepository.findById(product.getId()).orElseThrow(
-                    () -> new ProductException(ProductsErrorsEnum.ERROR_FIND_PRODUCT.getName())
-            );
+    public ResponseEntity<Object> save(@RequestBody Sale sale) {
+        try {
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(iSaleService.saveSale(sale));
+        } catch (UserException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (ProductException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e);
+        } catch (PaymentException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(iSaleService.saveSale(sale));
     }
 }

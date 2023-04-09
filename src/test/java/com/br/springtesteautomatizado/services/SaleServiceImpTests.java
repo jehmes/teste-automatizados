@@ -3,6 +3,7 @@ package com.br.springtesteautomatizado.services;
 import com.br.springtesteautomatizado.enums.PaymentMethodsEnum;
 import com.br.springtesteautomatizado.models.*;
 import com.br.springtesteautomatizado.repositories.SaleRepository;
+import com.br.springtesteautomatizado.repositories.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -17,6 +18,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+
+import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -28,11 +32,13 @@ class SaleServiceImpTests {
     private SaleRepository saleRepository;
     @Autowired
     private SaleServiceImp saleServiceImp;
+    @MockBean
+    private UserRepository userRepository;
     private Sale sale;
-
+    User user = new User();
     @BeforeEach
     public void setup() {
-        User user = new User();
+        user.setId(1L);
         user.setNome("Thales");
         user.setIdade(26);
         user.setCpf("11278342400");
@@ -62,6 +68,8 @@ class SaleServiceImpTests {
 
     @Test
     public void testDoASaleDoSave() throws Exception {
+        when(userRepository.findById(user.getId())).thenReturn(Optional.ofNullable(user));
+
         //Action
         saleServiceImp.saveSale(sale);
 
