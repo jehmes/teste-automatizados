@@ -1,8 +1,10 @@
 package com.br.springtesteautomatizado.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.hibernate.annotations.CreationTimestamp;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -18,20 +20,22 @@ public class Sale {
             joinColumns = @JoinColumn(name = "sale_id"),
             inverseJoinColumns = @JoinColumn(name = "product_id"))
     private List<Product> productList;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private User user;
-    @Column(nullable = false)
-    private LocalDateTime dateTime;
-    @Column(nullable = false)
+    @Column
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
+    @CreationTimestamp
+    private LocalDateTime localDateTime;
+    @Column
     private BigDecimal amount;
     @JoinColumn(name = "payment_id")
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     private Payment payment;
 
-    public Sale(List<Product> productList, User user, LocalDateTime dateTime, BigDecimal totalPrice, Payment payment) {
+    public Sale(List<Product> productList, User user, LocalDateTime dateTime, BigDecimal totalPrice) {
         this.productList = productList;
         this.user = user;
-        this.dateTime = dateTime;
+        this.localDateTime = dateTime;
         this.amount = totalPrice;
     }
 
@@ -54,12 +58,12 @@ public class Sale {
         this.user = user;
     }
 
-    public LocalDateTime getDateTime() {
-        return dateTime;
+    public LocalDateTime getLocalDateTime() {
+        return localDateTime;
     }
 
-    public void setDateTime(LocalDateTime dateTime) {
-        this.dateTime = dateTime;
+    public void setLocalDateTime(LocalDateTime localDateTime) {
+        this.localDateTime = localDateTime;
     }
 
     public BigDecimal getAmount() {

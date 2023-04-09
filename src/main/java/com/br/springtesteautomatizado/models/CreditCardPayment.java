@@ -8,6 +8,7 @@ import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "GP_PAYMENT_CREDIT_CARD")
@@ -19,15 +20,12 @@ public class CreditCardPayment extends Payment{
     private String cvv;
     @Column(nullable = false)
     private String holderName;
-    @Column(nullable = false)
-    private LocalDate expirationDate;
 
-    public CreditCardPayment(LocalDate date, PaymentMethodsEnum paymentMethod, BigDecimal amount, String cardNumber, String cvv, String holderName, LocalDate expirationDate) {
+    public CreditCardPayment(LocalDateTime date, PaymentMethodsEnum paymentMethod, BigDecimal amount, String cardNumber, String cvv, String holderName) {
         super(date, paymentMethod, amount);
         this.cardNumber = cardNumber;
         this.cvv = cvv;
         this.holderName = holderName;
-        this.expirationDate = expirationDate;
     }
 
     public CreditCardPayment() {
@@ -57,13 +55,6 @@ public class CreditCardPayment extends Payment{
         this.holderName = holderName;
     }
 
-    public LocalDate getExpirationDate() {
-        return expirationDate;
-    }
-
-    public void setExpirationDate(LocalDate expirationDate) {
-        this.expirationDate = expirationDate;
-    }
 
     @Override
     public String toString() {
@@ -71,7 +62,6 @@ public class CreditCardPayment extends Payment{
                 "cardNumber='" + cardNumber + '\'' +
                 ", cvv='" + cvv + '\'' +
                 ", holderName='" + holderName + '\'' +
-                ", expirationDate=" + expirationDate +
                 "} " + super.toString();
     }
 }

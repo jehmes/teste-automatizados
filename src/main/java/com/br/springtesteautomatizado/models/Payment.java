@@ -1,12 +1,14 @@
 package com.br.springtesteautomatizado.models;
 
 import com.br.springtesteautomatizado.enums.PaymentMethodsEnum;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
@@ -27,14 +29,16 @@ public class Payment {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
     @Column(nullable = false)
-    private LocalDate paymentDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
+    @CreationTimestamp
+    private LocalDateTime paymentDate;
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PaymentMethodsEnum paymentMethod;
     @Column(nullable = false)
     private BigDecimal amount;
 
-    public Payment(LocalDate date, PaymentMethodsEnum paymentMethod, BigDecimal amount) {
+    public Payment(LocalDateTime date, PaymentMethodsEnum paymentMethod, BigDecimal amount) {
         this.paymentDate = date;
         this.paymentMethod = paymentMethod;
         this.amount = amount;
@@ -51,11 +55,11 @@ public class Payment {
         this.id = id;
     }
 
-    public LocalDate getPaymentDate() {
+    public LocalDateTime getPaymentDate() {
         return paymentDate;
     }
 
-    public void setPaymentDate(LocalDate paymentDate) {
+    public void setPaymentDate(LocalDateTime paymentDate) {
         this.paymentDate = paymentDate;
     }
 

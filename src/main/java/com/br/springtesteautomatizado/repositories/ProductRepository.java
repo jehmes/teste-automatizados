@@ -10,5 +10,5 @@ import java.util.List;
 
 public interface ProductRepository extends CrudRepository<Product, Long> {
     @Query("SELECT count(1) FROM Product p WHERE p.name IN (:productsNames)")
-    Integer findByProductsName(@Param("productsNames") List<String> productsNames);
+    Integer findByProductsByName(@Param("productsNames") List<String> productsNames);
 }

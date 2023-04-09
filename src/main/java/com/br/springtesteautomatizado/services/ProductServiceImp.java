@@ -2,7 +2,8 @@ package com.br.springtesteautomatizado.services;
 
 import com.br.springtesteautomatizado.enums.ProductsErrorsEnum;
 import com.br.springtesteautomatizado.exceptions.DuplicateProductExcpetion;
-import com.br.springtesteautomatizado.exceptions.ProductException;
+import com.br.springtesteautomatizado.exceptions.ProductNegativeStockException;
+import com.br.springtesteautomatizado.exceptions.ProductNotFoundException;
 import com.br.springtesteautomatizado.interfaces.IProductService;
 import com.br.springtesteautomatizado.models.Product;
 import com.br.springtesteautomatizado.repositories.ProductRepository;
@@ -21,20 +22,20 @@ public class ProductServiceImp implements IProductService {
     private ProductRepository productRepository;
 
 
-    public void subtractProducts(List<Product> products) throws ProductException {
+    public void subtractProducts(List<Product> products) throws ProductNotFoundException, ProductNegativeStockException {
         List<Product> updateProducts = new ArrayList<>();
 
         for (Product product : products) {
             Optional<Product> productFromDB = productRepository.findById(product.getId());
             if (productFromDB.isEmpty()) {
-                throw new ProductException("Not Found");
+                throw new ProductNotFoundException(ProductsErrorsEnum.ERROR_FIND_PRODUCT.getName());
             }
 
             if (productFromDB.get().getQuantity() - product.getQuantity() == 0) {
                 productFromDB.get().setQuantity(0);
                 updateProducts.add(productFromDB.get());
             } else if (product.getQuantity() > productFromDB.get().getQuantity()) {
-                throw new ProductException(ProductsErrorsEnum.ERROR_NEGATIVE_STOCK.getName());
+                throw new ProductNegativeStockException(ProductsErrorsEnum.ERROR_NEGATIVE_STOCK.getName());
             } else {
                 productFromDB.get().setQuantity(productFromDB.get().getQuantity() - product.getQuantity());
                 updateProducts.add(productFromDB.get());
@@ -46,7 +47,7 @@ public class ProductServiceImp implements IProductService {
     @Override
     public List<Product> saveProductList(List<Product> products) throws DuplicateProductExcpetion {
         List<String> productsNames = products.stream().map(Product::getName).collect(Collectors.toList());
-        Integer existProduct = productRepository.findByProductsName(productsNames);
+        Integer existProduct = productRepository.findByProductsByName(productsNames);
         if (existProduct > 0) {
             throw new DuplicateProductExcpetion("Product already exists");
         }

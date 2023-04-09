@@ -46,7 +46,7 @@ class UserServiceImpTests {
     }
 
     @Test
-    public void testCreateAValidUser() throws CpfInvalidoException, CpfCreatedExistException {
+    void shouldCreateAValidUser() throws CpfInvalidoException, CpfCreatedExistException {
         Mockito.when(userRepository.save(user)).thenReturn(user);
 
         // acao ou Action
@@ -58,7 +58,7 @@ class UserServiceImpTests {
     }
 
     @Test
-    public void testThrowsCpfInvalidWhenTryCreateAUser() throws CpfCreatedExistException, CpfInvalidoException {
+    void shouldThrowsCpfInvalidWhenTryCreateAInvalidUser() throws CpfCreatedExistException, CpfInvalidoException {
         // cenario ou Arrange
         user.setCpf("123");
         when(validationsCrud.validarCpf(user.getCpf())).thenThrow(CpfInvalidoException.class);
@@ -73,7 +73,7 @@ class UserServiceImpTests {
     }
 
     @Test
-    public void testThrowsCpfAlreadyRegisteredWhenTryCreateAUser() throws CpfInvalidoException, CpfCreatedExistException {
+    void shouldThrowCpfAlreadyRegisteredWhenTryCreateAInvalidUser() throws CpfInvalidoException, CpfCreatedExistException {
         // cenario ou Arrange
         Mockito.when(userRepository.findByCpf("22314869488")).thenReturn(user);
         when(validationsCrud.validarSeExisteCpfCadastrado(user.getCpf())).thenThrow(CpfCreatedExistException.class);
@@ -88,7 +88,7 @@ class UserServiceImpTests {
     }
 
     @Test
-    public void testGetAllUser() {
+    void shouldReturnAllUsersFromDb() {
         Mockito.when(userServiceImp.obterTodosUsuarios()).thenReturn(userList);
 
         //Action
@@ -100,7 +100,7 @@ class UserServiceImpTests {
     }
 
     @Test
-    public void testEditUserWithValidCpf() throws CpfCreatedExistException, CpfInvalidoException {
+    void shouldEditAValidUser() throws CpfCreatedExistException, CpfInvalidoException {
         userServiceImp.editar(user);
 
         verify(validationsCrud).validarCpf(user.getCpf());

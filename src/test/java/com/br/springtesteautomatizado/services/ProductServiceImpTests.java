@@ -2,7 +2,8 @@ package com.br.springtesteautomatizado.services;
 
 import com.br.springtesteautomatizado.enums.ProductsErrorsEnum;
 import com.br.springtesteautomatizado.exceptions.DuplicateProductExcpetion;
-import com.br.springtesteautomatizado.exceptions.ProductException;
+import com.br.springtesteautomatizado.exceptions.ProductNegativeStockException;
+import com.br.springtesteautomatizado.exceptions.ProductNotFoundException;
 import com.br.springtesteautomatizado.models.Cart;
 import com.br.springtesteautomatizado.models.Product;
 import com.br.springtesteautomatizado.models.Sale;
@@ -21,7 +22,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,7 +46,7 @@ class ProductServiceImpTests {
         user.setIdade(26);
         user.setCpf("11278342400");
 
-        productList = Arrays.asList(
+        productList = List.of(
                 new Product("Tenis", BigDecimal.valueOf(199.90), 4));
 
         Cart cart = new Cart();
@@ -57,13 +57,13 @@ class ProductServiceImpTests {
         sale = new Sale();
         sale.setUser(user);
         sale.setAmount(BigDecimal.valueOf(269.8));
-        sale.setDateTime(LocalDateTime.now());
+        sale.setLocalDateTime(LocalDateTime.now());
 
-        when(productRepository.findByProductsName(Mockito.anyList())).thenReturn(0);
+        when(productRepository.findByProductsByName(Mockito.anyList())).thenReturn(0);
     }
 
     @Test
-    public void subtractProducts_doTheSubtractAndCompareDatePeriod() throws Exception {
+    void shouldSubtractProduct() throws Exception {
         //Arrange
         Mockito.when(productRepository.findById(productList.get(0).getId())).thenReturn(Optional.of(productList.get(0)));
 
@@ -72,13 +72,13 @@ class ProductServiceImpTests {
 
         //Assert
         verify(productRepository, Mockito.times(1)).saveAll(Mockito.anyCollection());
-        long milliSecondsValue = milliSecondsBetweenDate(sale.getDateTime(), LocalDateTime.now());
+        long milliSecondsValue = milliSecondsBetweenDate(sale.getLocalDateTime(), LocalDateTime.now());
         Assert.assertTrue(milliSecondsValue < 10000);
     }
 
 
     @Test
-    public void testSubtractProducts_throwProductExcpetion_negativeStock() {
+    void shouldThrowProductNegativeStockException() {
         //Arrange
         Product dbProduct = new Product(null, null, 1);
         Mockito.when(productRepository.findById(productList.get(0).getId())).thenReturn(Optional.of(dbProduct));
@@ -87,14 +87,14 @@ class ProductServiceImpTests {
             //Action
             productService.subtractProducts(productList);
             Assert.fail("Esperava lançar exception de estoque negativo");
-        } catch (ProductException e) {
+        } catch (ProductNegativeStockException | ProductNotFoundException e) {
             //Assert
             Assert.assertEquals(ProductsErrorsEnum.ERROR_NEGATIVE_STOCK.getName() , e.getMessage());
         }
     }
 
     @Test
-    public void testSubtractProducts_setQuantityTo0ToDbProductWhenClearStock() throws ProductException {
+    void shouldSetQuantityTo0ToDbProductWhenStockIsEmpty() throws ProductNegativeStockException, ProductNotFoundException {
         //Arrange
         Product dbProduct = new Product(null, null, 4);
         Mockito.when(productRepository.findById(productList.get(0).getId())).thenReturn(Optional.of(dbProduct));
@@ -108,16 +108,16 @@ class ProductServiceImpTests {
     }
 
     @Test
-    public void testSaveProductList() throws DuplicateProductExcpetion {
+    void shouldSaveProductList() throws DuplicateProductExcpetion {
         productService.saveProductList(productList);
 
         verify(productRepository).saveAll(productList);
     }
 
     @Test
-    public void testThrowsADuplicateProductExceptionWhenSaveAListOfProductsWithSomeDuplicateProduct() throws DuplicateProductExcpetion {
+    void shouldThrowADuplicateProductExceptionWhenSaveAListOfProductsWithSomeDuplicateProduct() {
 //        exception.expect(DuplicateProductExcpetion.class);
-        when(productRepository.findByProductsName(Mockito.anyList())).thenReturn(1);
+        when(productRepository.findByProductsByName(Mockito.anyList())).thenReturn(1);
 
 
         DuplicateProductExcpetion exception = assertThrows(DuplicateProductExcpetion.class, () -> {

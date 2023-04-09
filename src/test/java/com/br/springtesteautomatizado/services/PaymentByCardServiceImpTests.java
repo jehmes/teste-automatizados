@@ -3,7 +3,7 @@ package com.br.springtesteautomatizado.services;
 
 import com.br.springtesteautomatizado.enums.PaymentErrorsEnum;
 import com.br.springtesteautomatizado.enums.PaymentMethodsEnum;
-import com.br.springtesteautomatizado.exceptions.PaymentException;
+import com.br.springtesteautomatizado.exceptions.PaymentInvalidException;
 import com.br.springtesteautomatizado.models.*;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,18 +46,18 @@ class PaymentByCardServiceImpTests {
         sale = new Sale();
         sale.setUser(user);
         sale.setAmount(BigDecimal.valueOf(269.8));
-        sale.setDateTime(LocalDateTime.now());
+        sale.setLocalDateTime(LocalDateTime.now());
 
         sale.setProductList(productList);
 
-        CreditCardPayment payment = new CreditCardPayment(LocalDate.now(), PaymentMethodsEnum.CARD, new BigDecimal("269.8"), "1234567890123456", "123", "Jehmes", LocalDate.now().plusDays(1));
+        CreditCardPayment payment = new CreditCardPayment(LocalDateTime.now(), PaymentMethodsEnum.CARD, new BigDecimal("269.8"), "1234567890123456", "123", "Jehmes");
 
         sale.setPayment(payment);
 
     }
 
     @Test
-    public void testDoPaymentWithValidCard() throws PaymentException {
+    void shouldDoAPaymentWithValidCard() throws PaymentInvalidException {
 
         Payment paymentResult = paymentByCardServiceImp.doPayment(sale);
 //        sale.setPayment(payment = new CreditCardPayment(null, LocalDate.now(), PaymentMethodsEnum.CARD, new BigDecimal("249.8"), "1234567890123456", "123", "Jehmes", LocalDate.now().plusDays(1)));
@@ -66,12 +66,12 @@ class PaymentByCardServiceImpTests {
     }
 
     @Test
-    public void testThrowAPaymentExceptionWhenUseInvalidCard() {
+    void testThrowAPaymentExceptionWhenUseInvalidCard() {
         ((CreditCardPayment) sale.getPayment()).setCardNumber("123");
         try {
             paymentByCardServiceImp.doPayment(sale);
             Assert.fail("Deveria lançar execção de cartão inválido!");
-        } catch (PaymentException e) {
+        } catch (PaymentInvalidException e) {
             Assert.assertEquals(e.getMessage(), PaymentErrorsEnum.CARD_INVALID.getName());
         }
     }

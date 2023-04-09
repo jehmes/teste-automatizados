@@ -1,7 +1,7 @@
-package com.br.springtesteautomatizado.exceptionHandlerController.product;
+package com.br.springtesteautomatizado.exceptionHandlerController;
 
-import com.br.springtesteautomatizado.exceptionHandlerController.ExceptionResponse;
 import com.br.springtesteautomatizado.exceptions.DuplicateProductExcpetion;
+import com.br.springtesteautomatizado.exceptions.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -13,12 +13,12 @@ import java.util.Date;
 
 @ControllerAdvice
 @RestController
-public class ExceptionProductHandlerController  {
-    @ExceptionHandler(DuplicateProductExcpetion.class)
-    public final ResponseEntity<ExceptionResponse> handleDuplicateProductException(DuplicateProductExcpetion ex, WebRequest request) {
+public class ExceptionUserHandlerController {
+    @ExceptionHandler(UserNotFoundException.class)
+    public final ResponseEntity<ExceptionResponse> handleDuplicateProductException(UserNotFoundException ex, WebRequest request) {
         ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
-                request.getDescription(false), HttpStatus.CONFLICT.getReasonPhrase(), HttpStatus.CONFLICT.value());
+                request.getDescription(false), HttpStatus.NOT_FOUND.getReasonPhrase(), HttpStatus.NOT_FOUND.value());
         ex.printStackTrace();
-        return new ResponseEntity<>(exceptionResponse, HttpStatus.CONFLICT);
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
     }
 }

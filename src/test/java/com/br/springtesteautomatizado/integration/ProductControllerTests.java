@@ -6,10 +6,7 @@ import com.br.springtesteautomatizado.repositories.ProductRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -25,6 +22,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -32,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource("/application.properties")
 @AutoConfigureMockMvc
 @SpringBootTest
-public class ProductControllerTests {
+class ProductControllerTests {
 
     private static MockHttpServletRequest request;
     @Autowired
@@ -69,7 +67,7 @@ public class ProductControllerTests {
     }
 
     @Test
-    void shoudCreateProducts() throws Exception {
+    void shouldCreateProducts() throws Exception {
         List<Product> products = (List<Product>) productRepository.findAll();
         System.out.println(products);
 
@@ -90,11 +88,11 @@ public class ProductControllerTests {
         String responseContent = mvcResult.getResponse().getContentAsString();
         List<Product> productListResponse = objectMapper.readValue(responseContent, new TypeReference<List<Product>>() {});
 
-        Assert.assertEquals(productList, productListResponse);
+        assertEquals(productList, productListResponse);
     }
 
     @Test
-    void shouldThrowDuplicateProductExcpetionWhenTryToCreateProductExistingOnDatabase() throws Exception {
+    void shouldThrowDuplicateProductExceptionWhenTryToCreateProductExistingOnDatabase() throws Exception {
         List<Product> products = (List<Product>) productRepository.findAll();
         System.out.println(products);
 

@@ -2,6 +2,7 @@ package com.br.springtesteautomatizado.services;
 
 import com.br.springtesteautomatizado.enums.PaymentMethodsEnum;
 import com.br.springtesteautomatizado.models.*;
+import com.br.springtesteautomatizado.repositories.ProductRepository;
 import com.br.springtesteautomatizado.repositories.SaleRepository;
 import com.br.springtesteautomatizado.repositories.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.mockito.Mockito.when;
 
@@ -34,6 +36,8 @@ class SaleServiceImpTests {
     private SaleServiceImp saleServiceImp;
     @MockBean
     private UserRepository userRepository;
+    @MockBean
+    private ProductRepository productRepository;
     private Sale sale;
     User user = new User();
     @BeforeEach
@@ -47,9 +51,9 @@ class SaleServiceImpTests {
                 new Product("Sapato", BigDecimal.valueOf(199.90), 5),
                 new Product("Camisa", BigDecimal.valueOf(69.90), 2));
 
-        Payment payment = new CreditCardPayment(LocalDate.now(), PaymentMethodsEnum.CARD,
+        Payment payment = new CreditCardPayment(LocalDateTime.now(), PaymentMethodsEnum.CARD,
                 new BigDecimal("269.8"), "1234567890123456", "123",
-                "Jehmes", LocalDate.now().plusDays(1));
+                "Jehmes");
 
         Cart cart = new Cart();
         cart.setUser(user);
@@ -59,7 +63,7 @@ class SaleServiceImpTests {
         sale = new Sale();
         sale.setUser(user);
         sale.setAmount(BigDecimal.valueOf(269.8));
-        sale.setDateTime(LocalDateTime.now());
+        sale.setLocalDateTime(LocalDateTime.now());
 
         sale.setProductList(productList);
         sale.setPayment(payment);
@@ -67,8 +71,10 @@ class SaleServiceImpTests {
     }
 
     @Test
-    public void testDoASaleDoSave() throws Exception {
+    void shouldDoAndSaveASale() throws Exception {
+        List<String> productsIds = sale.getProductList().stream().map(Product::getName).collect(Collectors.toList());
         when(userRepository.findById(user.getId())).thenReturn(Optional.ofNullable(user));
+        when(productRepository.findByProductsByName(productsIds)).thenReturn(sale.getProductList().size());
 
         //Action
         saleServiceImp.saveSale(sale);
