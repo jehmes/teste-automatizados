@@ -1,8 +1,8 @@
 package com.br.springtesteautomatizado.services;
 
 import com.br.springtesteautomatizado.enums.UserErrorsEnum;
-import com.br.springtesteautomatizado.exceptions.CpfInvalidoException;
 import com.br.springtesteautomatizado.exceptions.CpfAlreadyExistException;
+import com.br.springtesteautomatizado.exceptions.InvalidCpfException;
 import com.br.springtesteautomatizado.exceptions.UserNotFoundException;
 import com.br.springtesteautomatizado.interfaces.IUserService;
 import com.br.springtesteautomatizado.models.User;
@@ -26,17 +26,9 @@ public class UserServiceImp implements IUserService {
     private IValidationsCrud validationsCrud;
 
     @Override
-    public User create(User user) throws CpfInvalidoException, CpfAlreadyExistException {
+    public User save(User user) throws InvalidCpfException, CpfAlreadyExistException {
         validationsCrud.validarCpf(user.getCpf());
-        validationsCrud.validarSeExisteCpfCadastrado(user.getCpf());
-
-        return userRepository.save(user);
-    }
-
-    @Override
-    public User editar(User user) throws CpfInvalidoException, CpfAlreadyExistException {
-        validationsCrud.validarCpf(user.getCpf());
-        validationsCrud.validarSeExisteCpfCadastrado(user.getCpf());
+        validationsCrud.validarSeExisteCpfCadastrado(user.getCpf(), user.getId());
 
         return userRepository.save(user);
     }
@@ -55,6 +47,15 @@ public class UserServiceImp implements IUserService {
     @Override
     public Page<User> getAll(Pageable page) {
         return userRepository.findAll(page);
+    }
+
+    @Override
+    public User update(User user, Long id) throws UserNotFoundException, InvalidCpfException, CpfAlreadyExistException {
+        findById(id);
+        validationsCrud.validarCpf(user.getCpf());
+        validationsCrud.validarSeExisteCpfCadastrado(user.getCpf(), id);
+        user.setId(id);
+        return userRepository.save(user);
     }
 
     @Override

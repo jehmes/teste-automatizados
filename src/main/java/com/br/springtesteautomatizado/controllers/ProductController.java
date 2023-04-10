@@ -1,6 +1,6 @@
 package com.br.springtesteautomatizado.controllers;
 
-import com.br.springtesteautomatizado.exceptions.DuplicateProductExcpetion;
+import com.br.springtesteautomatizado.exceptions.DuplicateProductException;
 import com.br.springtesteautomatizado.interfaces.IProductService;
 import com.br.springtesteautomatizado.models.Product;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ public class ProductController {
     private IProductService iProductService;
 
     @PostMapping("/create")
-    public ResponseEntity<Object> createListProducts(@RequestBody List<Product> products) throws DuplicateProductExcpetion {
+    public ResponseEntity<Object> createListProducts(@RequestBody List<Product> products) throws DuplicateProductException {
         return ResponseEntity.status(HttpStatus.CREATED).body(iProductService.saveProductList(products));
     }
 }

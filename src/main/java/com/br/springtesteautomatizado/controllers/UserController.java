@@ -2,7 +2,7 @@ package com.br.springtesteautomatizado.controllers;
 
 import com.br.springtesteautomatizado.dtos.UserDto;
 import com.br.springtesteautomatizado.exceptions.CpfAlreadyExistException;
-import com.br.springtesteautomatizado.exceptions.CpfInvalidoException;
+import com.br.springtesteautomatizado.exceptions.InvalidCpfException;
 import com.br.springtesteautomatizado.exceptions.UserNotFoundException;
 import com.br.springtesteautomatizado.interfaces.IUserService;
 import com.br.springtesteautomatizado.models.User;
@@ -25,10 +25,10 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> create(@RequestBody UserDto userDto) throws CpfAlreadyExistException, CpfInvalidoException {
+    public ResponseEntity<Object> create(@RequestBody UserDto userDto) throws CpfAlreadyExistException, InvalidCpfException {
         User user = new User();
         BeanUtils.copyProperties(userDto, user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(userService.create(user));
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.save(user));
     }
 
     @GetMapping("/{id}")
@@ -45,5 +45,13 @@ public class UserController {
     public ResponseEntity<Object> deleteById(@PathVariable(value = "id") Long id) {
         userService.deleteById(id);
         return ResponseEntity.status(HttpStatus.OK).body("User deleted successfully");
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Object> updateById(@PathVariable(value = "id") Long id, @RequestBody UserDto userDto)
+            throws CpfAlreadyExistException, InvalidCpfException, UserNotFoundException {
+        User user = new User();
+        BeanUtils.copyProperties(userDto, user);
+        return ResponseEntity.status(HttpStatus.OK).body(userService.update(user, id));
     }
 }

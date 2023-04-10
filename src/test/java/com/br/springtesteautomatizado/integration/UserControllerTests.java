@@ -127,6 +127,23 @@ public class UserControllerTests {
         assertEquals(1, pageUsersList.getContent().size());
     }
 
+    @Test
+    void shouldUpdateOneUser() throws Exception {
+        User user = new User("Jehmes updated",  "12345678900", 27);
+        user.setId(10L);
+        String requestAsJson = objectMapper.writeValueAsString(user);
+
+        mockMvc.perform(put(Objects.requireNonNull(mockRequest.getRequestURI()))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestAsJson))
+                .andExpect(status().isOk()).andReturn();
+
+
+        User userUpdated = userServiceImp.findById(USER_ID);
+
+        assertEquals(user.getName(), userUpdated.getName());
+    }
+
     private User jsonResponseToObject(MvcResult mvcResult) throws UnsupportedEncodingException, JsonProcessingException {
         String responseAsString = mvcResult.getResponse().getContentAsString();
         return objectMapper.readValue(responseAsString, new TypeReference<>() {});

@@ -1,7 +1,7 @@
 package com.br.springtesteautomatizado.services;
 
 import com.br.springtesteautomatizado.enums.ProductsErrorsEnum;
-import com.br.springtesteautomatizado.exceptions.DuplicateProductExcpetion;
+import com.br.springtesteautomatizado.exceptions.DuplicateProductException;
 import com.br.springtesteautomatizado.exceptions.ProductNegativeStockException;
 import com.br.springtesteautomatizado.exceptions.ProductNotFoundException;
 import com.br.springtesteautomatizado.interfaces.IProductService;
@@ -45,11 +45,11 @@ public class ProductServiceImp implements IProductService {
     }
 
     @Override
-    public List<Product> saveProductList(List<Product> products) throws DuplicateProductExcpetion {
+    public List<Product> saveProductList(List<Product> products) throws DuplicateProductException {
         List<String> productsNames = products.stream().map(Product::getName).collect(Collectors.toList());
         Integer existProduct = productRepository.findByProductsByName(productsNames);
         if (existProduct > 0) {
-            throw new DuplicateProductExcpetion("Product already exists");
+            throw new DuplicateProductException("Product already exists");
         }
         return (List<Product>) productRepository.saveAll(products);
     }

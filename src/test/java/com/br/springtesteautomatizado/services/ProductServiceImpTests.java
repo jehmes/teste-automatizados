@@ -1,7 +1,7 @@
 package com.br.springtesteautomatizado.services;
 
 import com.br.springtesteautomatizado.enums.ProductsErrorsEnum;
-import com.br.springtesteautomatizado.exceptions.DuplicateProductExcpetion;
+import com.br.springtesteautomatizado.exceptions.DuplicateProductException;
 import com.br.springtesteautomatizado.exceptions.ProductNegativeStockException;
 import com.br.springtesteautomatizado.exceptions.ProductNotFoundException;
 import com.br.springtesteautomatizado.models.Cart;
@@ -108,7 +108,7 @@ class ProductServiceImpTests {
     }
 
     @Test
-    void shouldSaveProductList() throws DuplicateProductExcpetion {
+    void shouldSaveProductList() throws DuplicateProductException {
         productService.saveProductList(productList);
 
         verify(productRepository).saveAll(productList);
@@ -120,11 +120,11 @@ class ProductServiceImpTests {
         when(productRepository.findByProductsByName(Mockito.anyList())).thenReturn(1);
 
 
-        DuplicateProductExcpetion exception = assertThrows(DuplicateProductExcpetion.class, () -> {
+        DuplicateProductException exception = assertThrows(DuplicateProductException.class, () -> {
             productService.saveProductList(productList);
         });
 
-        Assert.assertEquals(exception.getClass(), DuplicateProductExcpetion.class);
+        Assert.assertEquals(exception.getClass(), DuplicateProductException.class);
         verify(productRepository, never()).saveAll(productList);
     }
 

@@ -1,6 +1,6 @@
 package com.br.springtesteautomatizado.exceptionHandlerController;
 
-import com.br.springtesteautomatizado.exceptions.DuplicateProductExcpetion;
+import com.br.springtesteautomatizado.exceptions.DuplicateProductException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -13,8 +13,8 @@ import java.util.Date;
 @ControllerAdvice
 @RestController
 public class ExceptionSaleHandlerController {
-    @ExceptionHandler(DuplicateProductExcpetion.class)
-    public final ResponseEntity<ExceptionResponse> handleDuplicateProductException(DuplicateProductExcpetion ex, WebRequest request) {
+    @ExceptionHandler(DuplicateProductException.class)
+    public final ResponseEntity<ExceptionResponse> handleDuplicateProductException(DuplicateProductException ex, WebRequest request) {
         ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
                 request.getDescription(false), HttpStatus.CONFLICT.getReasonPhrase(), HttpStatus.CONFLICT.value());
         ex.printStackTrace();
