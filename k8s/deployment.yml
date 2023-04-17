@@ -46,7 +46,6 @@ spec:
     app: web
   ports:
     - port: 8080
-      protocol: TCP
       nodePort: 30000
   type: NodePort
 ---
