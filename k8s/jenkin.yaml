@@ -16,10 +16,10 @@ kind: Deployment
 metadata:
   name: jenkins
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: jenkins
+  replicas: 1
   template:
     metadata:
       labels:
@@ -27,12 +27,23 @@ spec:
     spec:
       containers:
         - name: jenkins
-          image: jenkins/jenkins:lts
+          image: jenkins/jenkins:lts-jdk11
           ports:
-            - containerPort: 8080
+            - name: http
+              containerPort: 8080
+            - name: jnlp
+              containerPort: 50000
           volumeMounts:
             - name: jenkins-home
               mountPath: /var/jenkins_home
+            - name: docker-socket
+              mountPath: /var/run/docker.sock
+          env:
+            - name: DOCKER_HOST
+              value: tcp://localhost:2375
       volumes:
         - name: jenkins-home
           emptyDir: {}
+        - name: docker-socket
+          hostPath:
+            path: /var/run/docker.sock
