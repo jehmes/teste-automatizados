@@ -5,7 +5,7 @@ FROM openjdk:11-jdk-slim
 WORKDIR /app
 
 # Copia o jar gerado pelo Maven para o diretório de trabalho
-COPY D:\Projetos\Backend\teste-automatizados\target*.jar app.jar
+COPY ./target*.jar app.jar
 
 # Expõe a porta 8080 para que possa ser acessada de fora do container
 EXPOSE 8080
